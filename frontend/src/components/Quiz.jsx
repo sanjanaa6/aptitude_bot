@@ -1,92 +1,159 @@
 import React, { useState, useEffect } from 'react'
-import { getQuizQuestions, submitQuiz } from '../api.js'
+import { getQuizQuestions } from '../api.js'
 
+// Clean Professional UI Components
 const containerStyle = {
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
-  padding: 16,
-  display: 'flex',
-  flexDirection: 'column',
-  height: 'calc(100vh - 130px)',
+  padding: '24px',
+  background: '#f8fafc',
+  minHeight: '100vh',
+  fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif'
 }
 
 const headerStyle = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginBottom: 16,
-  paddingBottom: 12,
-  borderBottom: '1px solid #e5e7eb',
+  marginBottom: '32px',
+  padding: '24px',
+  background: 'white',
+  borderRadius: '12px',
+  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  border: '1px solid #e2e8f0'
 }
 
 const questionStyle = {
   background: 'white',
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
-  padding: 16,
-  marginBottom: 16,
+  borderRadius: '12px',
+  padding: '32px',
+  marginBottom: '24px',
+  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  border: '1px solid #e2e8f0'
 }
 
-const optionStyle = (isSelected, isCorrect, showResults) => ({
-  padding: '12px 16px',
-  margin: '8px 0',
-  border: '1px solid #e5e7eb',
-  borderRadius: 6,
-  cursor: showResults ? 'default' : 'pointer',
-  background: showResults 
-    ? isCorrect 
-      ? '#dcfce7' 
-      : isSelected && !isCorrect 
-        ? '#fecaca' 
-        : 'white'
-    : isSelected 
-      ? '#e0f2fe' 
-      : 'white',
-  color: showResults && isCorrect ? '#166534' : '#111827',
-  transition: 'all 0.2s',
-})
+const optionStyle = (selected, correct, showResults) => {
+  let background = 'white'
+  let borderColor = '#e2e8f0'
+  let textColor = '#475569'
+  
+  if (showResults) {
+    if (correct) {
+      background = '#f0fdf4'
+      borderColor = '#10b981'
+      textColor = '#065f46'
+    } else if (selected && !correct) {
+      background = '#fef2f2'
+      borderColor = '#ef4444'
+      textColor = '#991b1b'
+    }
+  } else if (selected) {
+    background = '#eff6ff'
+    borderColor = '#3b82f6'
+    textColor = '#1e40af'
+  }
+  
+  return {
+    padding: '20px 24px',
+    marginBottom: '16px',
+    borderRadius: '8px',
+    border: `1px solid ${borderColor}`,
+    background: background,
+    color: textColor,
+    cursor: showResults ? 'default' : 'pointer',
+    fontSize: '16px',
+    fontWeight: '500',
+    transition: 'all 0.2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    position: 'relative',
+    overflow: 'hidden'
+  }
+}
 
 const buttonStyle = {
-  background: '#111827',
-  color: 'white',
+  padding: '16px 32px',
   border: 'none',
-  borderRadius: 8,
-  padding: '12px 24px',
+  borderRadius: '8px',
+  background: '#3b82f6',
+  color: 'white',
   cursor: 'pointer',
-  fontSize: 14,
-  fontWeight: 600,
+  fontSize: '16px',
+  fontWeight: '600',
+  transition: 'all 0.2s ease'
 }
 
 const disabledButtonStyle = {
   ...buttonStyle,
   background: '#9ca3af',
-  cursor: 'not-allowed',
+  cursor: 'not-allowed'
 }
 
 const timerStyle = {
-  fontSize: 14,
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  fontSize: '18px',
+  fontWeight: '600',
+  color: '#475569',
+  padding: '12px 20px',
+  background: 'rgba(255, 255, 255, 0.8)',
+  borderRadius: '12px',
+  backdropFilter: 'blur(10px)'
+}
+
+const progressBar = {
+  width: '100%',
+  height: '8px',
+  background: '#e5e7eb',
+  borderRadius: '4px',
+  overflow: 'hidden',
+  marginBottom: '24px'
+}
+
+const progressFill = (percentage) => ({
+  height: '100%',
+  width: `${percentage}%`,
+  background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+  borderRadius: '4px',
+  transition: 'width 0.3s ease'
+})
+
+const resultCard = {
+  background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+  border: '1px solid #f59e0b',
+  borderRadius: '20px',
+  padding: '32px',
+  textAlign: 'center',
+  marginBottom: '24px'
+}
+
+const emptyState = {
+  textAlign: 'center',
   color: '#6b7280',
-  fontWeight: 500,
+  padding: '80px 20px'
 }
 
-const resultsStyle = {
-  background: '#f8fafc',
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
-  padding: 16,
-  marginTop: 16,
+const emptyTitle = {
+  fontSize: '32px',
+  marginBottom: '16px',
+  color: '#374151'
 }
 
-export default function Quiz({ selectedTopic, onClose }) {
+const emptyText = {
+  fontSize: '18px',
+  marginBottom: '24px',
+  lineHeight: '1.6'
+}
+
+export default function Quiz({ selectedTopic }) {
   const [questions, setQuestions] = useState([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState([])
+  const [showResults, setShowResults] = useState(false)
+  const [timeElapsed, setTimeElapsed] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [showResults, setShowResults] = useState(false)
-  const [startTime, setStartTime] = useState(null)
-  const [timeElapsed, setTimeElapsed] = useState(0)
-  const [quizCompleted, setQuizCompleted] = useState(false)
+  const [quizStarted, setQuizStarted] = useState(false)
 
   useEffect(() => {
     if (selectedTopic) {
@@ -96,40 +163,27 @@ export default function Quiz({ selectedTopic, onClose }) {
 
   useEffect(() => {
     let interval
-    if (startTime && !quizCompleted) {
+    if (quizStarted && !showResults) {
       interval = setInterval(() => {
-        setTimeElapsed(Math.floor((Date.now() - startTime) / 1000))
+        setTimeElapsed(prev => prev + 1)
       }, 1000)
     }
     return () => clearInterval(interval)
-  }, [startTime, quizCompleted])
+  }, [quizStarted, showResults])
 
   const loadQuiz = async () => {
-    if (!selectedTopic) return
-    
     setLoading(true)
     setError('')
     try {
-      console.log('Loading quiz for topic:', selectedTopic)
-      const response = await getQuizQuestions(selectedTopic)
-      console.log('Quiz response:', response)
-      
-      if (!response || !response.questions) {
-        throw new Error('Invalid response format from server')
-      }
-      
-      setQuestions(response.questions)
-      setSelectedAnswers(new Array(response.questions.length).fill(null))
+      const response = await getQuizQuestions(selectedTopic, null, 10)
+      setQuestions(response.questions || [])
+      setSelectedAnswers(new Array(response.questions?.length || 0).fill(null))
       setCurrentQuestionIndex(0)
-      setStartTime(Date.now())
-      setTimeElapsed(0)
       setShowResults(false)
-      setQuizCompleted(false)
-      
-      console.log('Questions loaded:', response.questions.length)
-    } catch (err) {
-      console.error('Quiz loading error:', err)
-      setError(err.message || 'Failed to load quiz')
+      setTimeElapsed(0)
+      setQuizStarted(false)
+    } catch (error) {
+      setError(error.message || 'Failed to load quiz')
     } finally {
       setLoading(false)
     }
@@ -155,45 +209,71 @@ export default function Quiz({ selectedTopic, onClose }) {
     }
   }
 
-  const submitQuizAnswers = async () => {
-    if (selectedAnswers.some(answer => answer === null)) {
-      setError('Please answer all questions before submitting')
-      return
-    }
-
-    setLoading(true)
-    try {
-      const quizId = `quiz_${Date.now()}`
-      await submitQuiz(quizId, selectedAnswers, timeElapsed)
-      setQuizCompleted(true)
-      setShowResults(true)
-    } catch (err) {
-      setError(err.message || 'Failed to submit quiz')
-    } finally {
-      setLoading(false)
-    }
+  const finishQuiz = () => {
+    setShowResults(true)
+    setQuizStarted(false)
   }
 
   const restartQuiz = () => {
-    loadQuiz()
+    setCurrentQuestionIndex(0)
+    setSelectedAnswers(new Array(questions.length).fill(null))
+    setShowResults(false)
+    setTimeElapsed(0)
+    setQuizStarted(false)
   }
 
-  if (!selectedTopic) {
+  const startQuiz = () => {
+    setQuizStarted(true)
+  }
+
+  const getScore = () => {
+    let correct = 0
+    selectedAnswers.forEach((answer, index) => {
+      if (answer === questions[index]?.correct_answer) {
+        correct++
+      }
+    })
+    return { correct, total: questions.length, percentage: Math.round((correct / questions.length) * 100) }
+  }
+
+  const getScoreColor = (percentage) => {
+    if (percentage >= 80) return '#10b981'
+    if (percentage >= 60) return '#f59e0b'
+    return '#ef4444'
+  }
+
+  const getScoreMessage = (percentage) => {
+    if (percentage >= 90) return '🎉 Excellent! You\'re a master!'
+    if (percentage >= 80) return '🌟 Great job! You really know your stuff!'
+    if (percentage >= 70) return '👍 Good work! Keep learning!'
+    if (percentage >= 60) return '📚 Not bad! Review and try again!'
+    return '📖 Keep studying! Practice makes perfect!'
+  }
+
+  // Safety check for current question
+  if (!questions || questions.length === 0) {
     return (
       <div style={containerStyle}>
-        <div style={{ textAlign: 'center', color: '#6b7280' }}>
-          <h3>Select a topic to start a quiz</h3>
-          <p>Choose a topic from the left panel to begin practicing</p>
+        <div style={emptyState}>
+          <div style={emptyTitle}>📚 No Quiz Available</div>
+          <div style={emptyText}>
+            This topic doesn't have any quiz questions yet.<br />
+            Admins need to add questions through the Quiz Manager first.
+          </div>
+          <button onClick={loadQuiz} style={buttonStyle}>
+            🔄 Check Again
+          </button>
         </div>
       </div>
     )
   }
 
-  if (loading && questions.length === 0) {
+  if (loading) {
     return (
       <div style={containerStyle}>
-        <div style={{ textAlign: 'center' }}>
-          <div>Loading quiz...</div>
+        <div style={emptyState}>
+          <div style={emptyTitle}>⏳ Loading Quiz...</div>
+          <div style={emptyText}>Preparing your quiz questions...</div>
         </div>
       </div>
     )
@@ -202,29 +282,11 @@ export default function Quiz({ selectedTopic, onClose }) {
   if (error && questions.length === 0) {
     return (
       <div style={containerStyle}>
-        <div style={{ textAlign: 'center', color: '#dc2626' }}>
-          <div>Error: {error}</div>
-          <button 
-            onClick={loadQuiz} 
-            style={{ ...buttonStyle, marginTop: 16 }}
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  // Safety check for current question
-  if (!questions || questions.length === 0) {
-    return (
-      <div style={containerStyle}>
-        <div style={{ textAlign: 'center', color: '#6b7280' }}>
-          <h3>No quiz here</h3>
-          <p>This topic doesn't have any quiz questions yet.</p>
-          <p>Admins need to add questions through the Quiz Manager first.</p>
-          <button onClick={loadQuiz} style={{ ...buttonStyle, marginTop: 16 }}>
-            Check Again
+        <div style={emptyState}>
+          <div style={emptyTitle}>❌ Error Loading Quiz</div>
+          <div style={emptyText}>{error}</div>
+          <button onClick={loadQuiz} style={buttonStyle}>
+            🔄 Retry
           </button>
         </div>
       </div>
@@ -237,11 +299,11 @@ export default function Quiz({ selectedTopic, onClose }) {
   if (!currentQuestion) {
     return (
       <div style={containerStyle}>
-        <div style={{ textAlign: 'center', color: '#dc2626' }}>
-          <h3>Error loading question</h3>
-          <p>Unable to load question {currentQuestionIndex + 1}</p>
-          <button onClick={loadQuiz} style={{ ...buttonStyle, marginTop: 16 }}>
-            Retry
+        <div style={emptyState}>
+          <div style={emptyTitle}>❌ Error Loading Question</div>
+          <div style={emptyText}>Unable to load question {currentQuestionIndex + 1}</div>
+          <button onClick={loadQuiz} style={buttonStyle}>
+            🔄 Retry
           </button>
         </div>
       </div>
@@ -251,24 +313,99 @@ export default function Quiz({ selectedTopic, onClose }) {
   const isLastQuestion = currentQuestionIndex === questions.length - 1
   const allAnswered = selectedAnswers.every(answer => answer !== null)
 
+  if (!quizStarted) {
+    return (
+      <div style={containerStyle}>
+        <div style={questionStyle}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🧠</div>
+            <h2 style={{ margin: '0 0 16px 0', color: '#1f2937', fontSize: '32px', fontWeight: '700' }}>
+              Quiz: {selectedTopic}
+            </h2>
+            <p style={{ margin: '0 0 24px 0', color: '#6b7280', fontSize: '18px', lineHeight: '1.6' }}>
+              Test your knowledge with {questions.length} questions about {selectedTopic}.<br />
+              Take your time and think carefully about each answer!
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{ padding: '12px 20px', background: '#f3f4f6', borderRadius: '12px', fontSize: '14px' }}>
+                📝 {questions.length} Questions
+              </div>
+              <div style={{ padding: '12px 20px', background: '#f3f4f6', borderRadius: '12px', fontSize: '14px' }}>
+                ⏱️ No Time Limit
+              </div>
+              <div style={{ padding: '12px 20px', background: '#f3f4f6', borderRadius: '12px', fontSize: '14px' }}>
+                🎯 Multiple Choice
+              </div>
+            </div>
+          </div>
+          <button onClick={startQuiz} style={buttonStyle}>
+            🚀 Start Quiz
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (showResults) {
+    const score = getScore()
+    return (
+      <div style={containerStyle}>
+        <div style={resultCard}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏆</div>
+          <h2 style={{ margin: '0 0 16px 0', color: '#92400e', fontSize: '32px', fontWeight: '700' }}>
+            Quiz Complete!
+          </h2>
+          <div style={{ fontSize: '24px', fontWeight: '600', color: '#92400e', marginBottom: '8px' }}>
+            {score.correct} out of {score.total} correct
+          </div>
+          <div style={{ fontSize: '18px', color: '#92400e', marginBottom: '24px' }}>
+            {score.percentage}% Score
+          </div>
+          <div style={{ fontSize: '16px', color: '#92400e', marginBottom: '32px', fontStyle: 'italic' }}>
+            {getScoreMessage(score.percentage)}
+          </div>
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={restartQuiz} style={buttonStyle}>
+              🔄 Try Again
+            </button>
+            <button onClick={loadQuiz} style={buttonStyle}>
+              📚 New Quiz
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={containerStyle}>
       {/* Header */}
       <div style={headerStyle}>
         <div>
-          <h3 style={{ margin: 0, color: '#111827' }}>Quiz: {selectedTopic}</h3>
-          <div style={timerStyle}>
+          <h3 style={{ margin: '0 0 8px 0', color: '#111827', fontSize: '24px', fontWeight: '700' }}>
+            🧠 Quiz: {selectedTopic}
+          </h3>
+          <div style={{ color: '#6b7280', fontSize: '16px' }}>
             Question {currentQuestionIndex + 1} of {questions.length}
           </div>
         </div>
         <div style={timerStyle}>
-          Time: {Math.floor(timeElapsed / 60)}:{(timeElapsed % 60).toString().padStart(2, '0')}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </svg>
+          {Math.floor(timeElapsed / 60)}:{(timeElapsed % 60).toString().padStart(2, '0')}
         </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div style={progressBar}>
+        <div style={progressFill(((currentQuestionIndex + 1) / questions.length) * 100)}></div>
       </div>
 
       {/* Question */}
       <div style={questionStyle}>
-        <h4 style={{ margin: '0 0 16px 0', color: '#111827' }}>
+        <h4 style={{ margin: '0 0 24px 0', color: '#111827', fontSize: '20px', fontWeight: '600', lineHeight: '1.6' }}>
           {currentQuestion.question}
         </h4>
         
@@ -283,78 +420,58 @@ export default function Quiz({ selectedTopic, onClose }) {
             )}
             onClick={() => handleAnswerSelect(index)}
           >
-            {String.fromCharCode(65 + index)}. {option}
+            <div style={{
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              border: '2px solid currentColor',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              {String.fromCharCode(65 + index)}
+            </div>
+            {option}
+            {showResults && index === currentQuestion.correct_answer && (
+              <div style={{ marginLeft: 'auto', fontSize: '20px' }}>✅</div>
+            )}
+            {showResults && selectedAnswers[currentQuestionIndex] === index && index !== currentQuestion.correct_answer && (
+              <div style={{ marginLeft: 'auto', fontSize: '20px' }}>❌</div>
+            )}
           </div>
         ))}
       </div>
 
       {/* Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <button
           onClick={previousQuestion}
           disabled={currentQuestionIndex === 0}
           style={currentQuestionIndex === 0 ? disabledButtonStyle : buttonStyle}
         >
-          Previous
+          ← Previous
         </button>
-
-        {!isLastQuestion ? (
-          <button
-            onClick={nextQuestion}
-            style={buttonStyle}
-          >
-            Next
-          </button>
-        ) : (
-          <button
-            onClick={submitQuizAnswers}
-            disabled={!allAnswered || loading}
-            style={!allAnswered || loading ? disabledButtonStyle : buttonStyle}
-          >
-            {loading ? 'Submitting...' : 'Submit Quiz'}
-          </button>
-        )}
-      </div>
-
-      {/* Results */}
-      {showResults && (
-        <div style={resultsStyle}>
-          <h4 style={{ margin: '0 0 12px 0', color: '#111827' }}>Quiz Results</h4>
-          <div style={{ marginBottom: 16 }}>
-            <p style={{ margin: '4px 0' }}>
-              <strong>Score:</strong> {selectedAnswers.filter((answer, index) => 
-                answer === questions[index].correct_answer
-              ).length} / {questions.length}
-            </p>
-            <p style={{ margin: '4px 0' }}>
-              <strong>Time:</strong> {Math.floor(timeElapsed / 60)}:{(timeElapsed % 60).toString().padStart(2, '0')}
-            </p>
-          </div>
+        
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          {allAnswered && (
+            <button onClick={finishQuiz} style={buttonStyle}>
+              🏁 Finish Quiz
+            </button>
+          )}
           
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button onClick={restartQuiz} style={buttonStyle}>
-              Take Quiz Again
+          {!isLastQuestion && (
+            <button
+              onClick={nextQuestion}
+              disabled={selectedAnswers[currentQuestionIndex] === null}
+              style={selectedAnswers[currentQuestionIndex] === null ? disabledButtonStyle : buttonStyle}
+            >
+              Next →
             </button>
-            <button onClick={onClose} style={{ ...buttonStyle, background: '#6b7280' }}>
-              Close Quiz
-            </button>
-          </div>
+          )}
         </div>
-      )}
-
-      {/* Error */}
-      {error && (
-        <div style={{ 
-          background: '#fef2f2', 
-          border: '1px solid #fecaca', 
-          borderRadius: 8, 
-          padding: 12, 
-          marginTop: 16,
-          color: '#dc2626'
-        }}>
-          {error}
-        </div>
-      )}
+      </div>
     </div>
   )
 }

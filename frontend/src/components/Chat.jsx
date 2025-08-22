@@ -2,11 +2,12 @@ import React, { useMemo, useRef, useState } from 'react'
 import { chat as chatApi } from '../api.js'
 
 const containerBase = {
-	border: '1px solid #e5e7eb',
-	borderRadius: 8,
-	padding: 12,
+	border: '1px solid #e2e8f0',
+	borderRadius: 12,
+	padding: 16,
 	display: 'flex',
 	flexDirection: 'column',
+	background: 'white'
 }
 
 const messagesBox = {
@@ -14,18 +15,20 @@ const messagesBox = {
   overflowY: 'auto',
   display: 'flex',
   flexDirection: 'column',
-  gap: 8,
+  gap: 12,
   paddingRight: 4,
 }
 
 const bubble = (role) => ({
   alignSelf: role === 'user' ? 'flex-end' : 'flex-start',
-  background: role === 'user' ? '#e0f2fe' : '#f3f4f6',
-  color: '#111827',
-  padding: '8px 10px',
+  background: role === 'user' ? '#3b82f6' : '#f1f5f9',
+  color: role === 'user' ? 'white' : '#1e293b',
+  padding: '12px 16px',
   borderRadius: 12,
   maxWidth: '80%',
   whiteSpace: 'pre-wrap',
+  fontSize: '14px',
+  lineHeight: '1.5'
 })
 
 export default function Chat({ height = 'calc(100vh - 130px)' }) {
@@ -67,7 +70,14 @@ export default function Chat({ height = 'calc(100vh - 130px)' }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a follow-up question..."
-          style={{ flex: 1, padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: 8 }}
+          style={{ 
+            flex: 1, 
+            padding: '12px 16px', 
+            border: '1px solid #e2e8f0', 
+            borderRadius: 8,
+            fontSize: '14px',
+            outline: 'none'
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()
@@ -79,12 +89,15 @@ export default function Chat({ height = 'calc(100vh - 130px)' }) {
           onClick={send}
           disabled={loading}
           style={{
-            background: '#111827',
+            background: '#3b82f6',
             color: 'white',
             border: 'none',
             borderRadius: 8,
-            padding: '10px 14px',
+            padding: '12px 16px',
             cursor: loading ? 'not-allowed' : 'pointer',
+            fontSize: '14px',
+            fontWeight: '500',
+            transition: 'all 0.2s ease'
           }}
         >
           {loading ? 'Sending...' : 'Send'}

@@ -12,12 +12,13 @@ import {
 } from '../api.js'
 
 const containerStyle = {
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
+  border: '1px solid #e2e8f0',
+  borderRadius: 12,
   padding: 16,
   display: 'flex',
   flexDirection: 'column',
   height: 'calc(100vh - 130px)',
+  background: 'white'
 }
 
 const headerStyle = {
@@ -26,35 +27,36 @@ const headerStyle = {
   alignItems: 'center',
   marginBottom: 16,
   paddingBottom: 12,
-  borderBottom: '1px solid #e5e7eb',
+  borderBottom: '1px solid #e2e8f0',
 }
 
 const tabStyle = (isActive) => ({
   padding: '8px 16px',
   border: 'none',
-  background: isActive ? '#111827' : '#f3f4f6',
-  color: isActive ? 'white' : '#111827',
-  borderRadius: 6,
+  background: isActive ? '#3b82f6' : '#f1f5f9',
+  color: isActive ? 'white' : '#475569',
+  borderRadius: 8,
   cursor: 'pointer',
   fontSize: 14,
   fontWeight: 500,
 })
 
 const formStyle = {
-  background: 'white',
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
+  background: '#f8fafc',
+  border: '1px solid #e2e8f0',
+  borderRadius: 12,
   padding: 16,
   marginBottom: 16,
 }
 
 const inputStyle = {
   width: '100%',
-  padding: '10px 12px',
-  border: '1px solid #e5e7eb',
-  borderRadius: 6,
+  padding: '12px 16px',
+  border: '1px solid #e2e8f0',
+  borderRadius: 8,
   marginBottom: 12,
   fontSize: 14,
+  outline: 'none'
 }
 
 const textareaStyle = {
@@ -65,26 +67,27 @@ const textareaStyle = {
 }
 
 const buttonStyle = {
-  background: '#111827',
+  background: '#3b82f6',
   color: 'white',
   border: 'none',
-  borderRadius: 6,
-  padding: '10px 20px',
+  borderRadius: 8,
+  padding: '12px 20px',
   cursor: 'pointer',
   fontSize: 14,
   fontWeight: 500,
   marginRight: 8,
+  transition: 'all 0.2s ease'
 }
 
 const secondaryButtonStyle = {
   ...buttonStyle,
-  background: '#6b7280',
+  background: '#64748b',
 }
 
 const itemStyle = {
   background: 'white',
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
+  border: '1px solid #e2e8f0',
+  borderRadius: 12,
   padding: 16,
   marginBottom: 12,
 }

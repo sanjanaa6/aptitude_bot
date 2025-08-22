@@ -44,7 +44,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
       {/* Mode Toggle */}
       <div style={{
         display: 'flex',
-        background: '#f7fafc',
+        background: '#f1f5f9',
         borderRadius: '8px',
         padding: '4px',
         marginBottom: '24px'
@@ -58,7 +58,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
             borderRadius: '6px',
             border: 'none',
             background: mode === 'login' ? 'white' : 'transparent',
-            color: mode === 'login' ? '#1a202c' : '#718096',
+            color: mode === 'login' ? '#1e293b' : '#64748b',
             fontWeight: mode === 'login' ? '500' : '400',
             cursor: 'pointer',
             boxShadow: mode === 'login' ? '0 1px 3px rgba(0, 0, 0, 0.1)' : 'none',
@@ -76,7 +76,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
             borderRadius: '6px',
             border: 'none',
             background: mode === 'register' ? 'white' : 'transparent',
-            color: mode === 'register' ? '#1a202c' : '#718096',
+            color: mode === 'register' ? '#1e293b' : '#64748b',
             fontWeight: mode === 'register' ? '500' : '400',
             cursor: 'pointer',
             boxShadow: mode === 'register' ? '0 1px 3px rgba(0, 0, 0, 0.1)' : 'none',

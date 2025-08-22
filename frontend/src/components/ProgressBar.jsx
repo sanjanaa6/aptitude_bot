@@ -1,7 +1,7 @@
 import React from 'react'
 
 const progressBarStyle = {
-  background: '#f3f4f6',
+  background: '#f1f5f9',
   borderRadius: 8,
   height: 8,
   overflow: 'hidden',
@@ -9,10 +9,10 @@ const progressBarStyle = {
 }
 
 const progressFillStyle = (percentage) => ({
-  background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+  background: '#3b82f6',
   height: '100%',
   width: `${percentage}%`,
-  transition: 'width 0.3s ease',
+  transition: 'width 0.2s ease',
 })
 
 const statsStyle = {
@@ -20,13 +20,13 @@ const statsStyle = {
   justifyContent: 'space-between',
   alignItems: 'center',
   fontSize: 14,
-  color: '#6b7280',
+  color: '#64748b',
 }
 
 const percentageStyle = {
   fontSize: 18,
   fontWeight: 600,
-  color: '#059669',
+  color: '#3b82f6',
 }
 
 export default function ProgressBar({ progressSummary }) {
@@ -35,9 +35,9 @@ export default function ProgressBar({ progressSummary }) {
   const { total_topics, completed_topics, progress_percentage } = progressSummary
 
   return (
-    <div style={{ padding: '16px', background: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
+    <div style={{ padding: '16px', background: 'white', borderRadius: 12, border: '1px solid #e2e8f0' }}>
       <div style={{ marginBottom: 12 }}>
-        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#111827' }}>
+        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#1e293b' }}>
           Learning Progress
         </h3>
       </div>
