@@ -402,11 +402,22 @@ async def explain_topic(
     return ChatResponse(content=content)
 
 @app.post("/chat", response_model=ChatResponse)
-def chat(req: ChatRequest) -> ChatResponse:
-    # Forward the conversation to OpenRouter
-    logger.info(f"Chat request for user: {get_current_user(req.messages[0].role if req.messages else 'anonymous').get('email') if req.messages else 'anonymous'}")
+def chat(
+    req: ChatRequest,
+    authorization: Optional[str] = Header(None, alias="Authorization")
+) -> ChatResponse:
+    # Forward the conversation to OpenRouter. If auth header present, log the user; otherwise allow anonymous chat.
+    user_email = None
+    if authorization:
+        try:
+            claims = get_current_user(authorization)
+            user_email = claims.get("email")
+        except Exception:
+            # If token invalid, still allow but log as anonymous
+            user_email = None
+    logger.info(f"Chat request for user: {user_email or 'anonymous'}")
     content = call_openrouter(req.messages, model=req.model)
-    logger.info(f"Chat request completed for user: {get_current_user(req.messages[0].role if req.messages else 'anonymous').get('email') if req.messages else 'anonymous'}")
+    logger.info(f"Chat request completed for user: {user_email or 'anonymous'}")
     return ChatResponse(content=content)
 
 @app.get("/progress")

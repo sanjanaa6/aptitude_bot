@@ -184,7 +184,41 @@ export default function UserDashboard() {
     setLoading(true)
     try {
       const res = await explainTopic(topic)
-      setExplanation(res.content || '')
+      const sanitizeExplanation = (text) => {
+        if (!text) return ''
+        let cleaned = String(text)
+        // Strip markdown headings
+        cleaned = cleaned.replace(/^#{1,6}\s*/gm, '')
+        // Remove bold/italic/code markers
+        cleaned = cleaned.replace(/\*\*|__/g, '')
+        cleaned = cleaned.replace(/[\*_`~]/g, '')
+        // Remove LaTeX style backslash delimiters and commands
+        cleaned = cleaned.replace(/\\[\[\](){}]/g, '')
+        cleaned = cleaned.replace(/\\[a-zA-Z]+\{[^}]*\}/g, '')
+        // Remove remaining backslashes
+        cleaned = cleaned.replace(/\\/g, '')
+        // Normalize bullets
+        cleaned = cleaned.replace(/^\s*[-*+]\s+/gm, '- ')
+        // Insert paragraph breaks before common labels
+        cleaned = cleaned.replace(/\s*-\s*(Definition|Purpose|Key Components|Example|Summary)\s*:/gi, '\n\n$1: ')
+        cleaned = cleaned.replace(/\b(Definition|Purpose|Key Concepts?|Key Components|Example|Summary)\s*:/gi, '\n\n$1: ')
+        // New lines for numbered items: 1., 2., 3.
+        cleaned = cleaned.replace(/\s(\d+)\.\s/g, '\n\n$1) ')
+        // Split long inline lists separated by pipes into lines
+        cleaned = cleaned.replace(/\|{2,}/g, ' | ')
+        cleaned = cleaned.replace(/\s\|\s/g, ' | ') // normalize spacing around |
+        // Break on table-like separators
+        cleaned = cleaned.replace(/\s?\|\s?/g, ' | ')
+        // Replace long dashes with line breaks around
+        cleaned = cleaned.replace(/\s?-{2,}\s?/g, '\n')
+        // Ensure sentences have spacing
+        cleaned = cleaned.replace(/([.!?])\s*(?=[A-Z0-9])/g, '$1\n')
+        // Collapse extra whitespace
+        cleaned = cleaned.replace(/\n{3,}/g, '\n\n')
+        cleaned = cleaned.replace(/[\t ]{2,}/g, ' ')
+        return cleaned.trim()
+      }
+      setExplanation(sanitizeExplanation(res.content || ''))
       try { await updateProgress(topic, true) } catch (_) {}
       updateDailyStreak()
       await loadProgress()

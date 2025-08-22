@@ -144,10 +144,12 @@ export default function Bookmarks({ selectedTopic }) {
   const [showBookmarkForm, setShowBookmarkForm] = useState(false)
   const [showNoteForm, setShowNoteForm] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
-  const [formData, setFormData] = useState({ title: '', content: '' })
+  const [formData, setFormData] = useState({ topic: selectedTopic || '', title: '', content: '' })
 
   useEffect(() => {
     loadData()
+    // keep topic in sync with currently selected topic when starting a new item
+    setFormData((prev) => ({ ...prev, topic: selectedTopic || '' }))
   }, [selectedTopic])
 
     const loadData = async () => {
@@ -181,7 +183,11 @@ export default function Bookmarks({ selectedTopic }) {
         if (editingItem) {
           await updateBookmark(editingItem.id, formData.title, formData.content)
         } else {
-          await createBookmark(selectedTopic, formData.title, formData.content)
+          const topicValue = (formData.topic || selectedTopic || '').trim()
+          if (!topicValue) {
+            throw new Error('Topic is required to create a bookmark')
+          }
+          await createBookmark(topicValue, formData.title, formData.content)
         }
       } else {
         if (editingItem) {
@@ -232,7 +238,7 @@ export default function Bookmarks({ selectedTopic }) {
   }
 
   const resetForm = () => {
-    setFormData({ title: '', content: '' })
+    setFormData({ topic: selectedTopic || '', title: '', content: '' })
     setEditingItem(null)
     setShowBookmarkForm(false)
     setShowNoteForm(false)
@@ -251,6 +257,16 @@ export default function Bookmarks({ selectedTopic }) {
         </h4>
         
         <form onSubmit={handleFormSubmit}>
+          {activeTab === 'bookmarks' && (
+            <input
+              type="text"
+              placeholder="Topic"
+              value={formData.topic}
+              onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+              style={inputStyle}
+              required
+            />
+          )}
           <input
             type="text"
             placeholder="Title"

@@ -75,7 +75,10 @@ export const updateProgress = async (topic, completed) => {
 
 // Chat API
 export const chat = async (messages) => {
-  const response = await axios.post(`${API_BASE}/chat`, { messages })
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.post(`${API_BASE}/chat`, { messages }, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {}
+  })
   return response.data
 }
 
