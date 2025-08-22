@@ -1,13 +1,12 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { chat as chatApi } from '../api.js'
 
-const container = {
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
-  padding: 12,
-  display: 'flex',
-  flexDirection: 'column',
-  height: 'calc(100vh - 130px)',
+const containerBase = {
+	border: '1px solid #e5e7eb',
+	borderRadius: 8,
+	padding: 12,
+	display: 'flex',
+	flexDirection: 'column',
 }
 
 const messagesBox = {
@@ -29,7 +28,7 @@ const bubble = (role) => ({
   whiteSpace: 'pre-wrap',
 })
 
-export default function Chat() {
+export default function Chat({ height = 'calc(100vh - 130px)' }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -54,7 +53,7 @@ export default function Chat() {
   }
 
   return (
-    <div style={container}>
+    <div style={{ ...containerBase, height }}>
       <div style={messagesBox}>
         {messages.map((m, idx) => (
           <div key={idx} style={bubble(m.role)}>
