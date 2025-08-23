@@ -4,7 +4,7 @@ import Users from './Users.jsx'
 import Topics from './Topics.jsx'
 import Analytics from './Analytics.jsx'
 import QuizManager from './QuizManager.jsx'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const layout = { display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: '100vh', background: '#f8fafc' }
 const header = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #e5e7eb', background: 'white', position: 'sticky', top: 0, zIndex: 10 }
@@ -20,13 +20,25 @@ export default function AdminDashboard() {
 	const [loading, setLoading] = useState(true)
 	const [adminName, setAdminName] = useState('Admin')
 	const [stats, setStats] = useState({ users: 0, sections: 0, topics: 0 })
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		me().then((r) => {
-			setIsAdmin(!!r?.user?.is_admin)
+			const adminStatus = !!r?.user?.is_admin
+			setIsAdmin(adminStatus)
 			setAdminName(r?.user?.username || r?.user?.email || 'Admin')
-		}).catch(() => setIsAdmin(false)).finally(() => setLoading(false))
-	}, [])
+			setLoading(false)
+			
+			// Redirect non-admin users to user dashboard
+			if (!adminStatus) {
+				navigate('/dashboard', { replace: true })
+			}
+		}).catch(() => {
+			setIsAdmin(false)
+			setLoading(false)
+			navigate('/dashboard', { replace: true })
+		})
+	}, [navigate])
 
 	useEffect(() => {
 		loadStats()
@@ -88,8 +100,14 @@ export default function AdminDashboard() {
 		}
 	}
 
+	const handleLogout = () => {
+		try {
+			localStorage.removeItem('qc_token')
+		} catch (_) {}
+		navigate('/login')
+	}
+
 	if (loading) return <div style={{ padding: 16 }}>Loading...</div>
-	if (!isAdmin) return <Navigate to="/dashboard" replace />
 
 	return (
 		<div style={layout}>
@@ -138,6 +156,29 @@ export default function AdminDashboard() {
 						<div style={{ width: 28, height: 28, borderRadius: 999, background: '#e5e7eb', display: 'grid', placeItems: 'center' }}>
 							<svg width="14" height="14" viewBox="0 0 24 24" stroke="#374151" fill="none" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
 						</div>
+						<button
+							onClick={handleLogout}
+							style={{
+								padding: '6px 12px',
+								borderRadius: '6px',
+								border: '1px solid #e5e7eb',
+								background: 'white',
+								color: '#374151',
+								cursor: 'pointer',
+								fontSize: '12px',
+								fontWeight: 500,
+								display: 'inline-flex',
+								alignItems: 'center',
+								gap: 6
+							}}
+						>
+							<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+								<path d="M10 17l5-5-5-5"/>
+								<path d="M15 12H3"/>
+								<path d="M21 19V5a2 2 0 0 0-2-2h-6"/>
+							</svg>
+							Logout
+						</button>
 					</div>
 				</div>
 				<main style={content}>
@@ -147,5 +188,3 @@ export default function AdminDashboard() {
 		</div>
 	)
 }
-
-

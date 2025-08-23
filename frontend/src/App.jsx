@@ -5,6 +5,7 @@ import SignupPage from './pages/SignupPage.jsx'
 import AdminDashboard from './admin/Dashboard.jsx'
 import UserDashboard from './user/Dashboard.jsx'
 import ProtectedRoute, { AdminRoute } from './ProtectedRoute.jsx'
+import { me } from './api.js'
 
 const pageStyle = {
   minHeight: '100vh',
@@ -66,6 +67,52 @@ const twoColMainStyle = {
 
 // UserDashboard moved to ./user/Dashboard.jsx
 
+// Smart redirect component that checks user admin status
+function SmartRedirect() {
+  const [isAdmin, setIsAdmin] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      try {
+        const token = localStorage.getItem('qc_token')
+        if (!token) {
+          setIsAdmin(false)
+          setLoading(false)
+          return
+        }
+        
+        const userInfo = await me()
+        setIsAdmin(!!userInfo?.user?.is_admin)
+      } catch (error) {
+        console.error('Error checking user status:', error)
+        setIsAdmin(false)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    checkUserStatus()
+  }, [])
+
+  if (loading) {
+    return <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh',
+      fontSize: '16px',
+      color: '#64748b'
+    }}>Loading...</div>
+  }
+
+  if (isAdmin) {
+    return <Navigate to="/admin" replace />
+  } else {
+    return <Navigate to="/dashboard" replace />
+  }
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -82,7 +129,7 @@ export default function App() {
             <AdminDashboard />
           </AdminRoute>
         } />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<SmartRedirect />} />
       </Routes>
     </BrowserRouter>
   )

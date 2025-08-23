@@ -148,14 +148,9 @@ export default function UserDashboard() {
   const [streakDays, setStreakDays] = useState(0)
   const [tab, setTab] = useState('explanation')
   const [filter, setFilter] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [checkingAdmin, setCheckingAdmin] = useState(true)
   const navigate = useNavigate()
-
-  useEffect(() => { getSections().then((res) => setSections(res.sections || [])).catch(() => setSections([])) }, [])
-  useEffect(() => { if (!authed) return; me().then((r) => { setUserLabel(r?.user?.username || r?.user?.email || 'Signed in') }).catch(() => {}) }, [authed])
-  useEffect(() => { if (!authed) return; loadProgress() }, [authed])
-  useEffect(() => { const stored = parseInt(localStorage.getItem('qc_streak_days') || '0', 10); setStreakDays(Number.isFinite(stored) ? stored : 0) }, [])
-
-  const filteredSections = sections.map(s => ({ ...s, topics: s.topics.filter(t => t.toLowerCase().includes(filter.toLowerCase() || '')) }))
 
   const loadProgress = async () => {
     setLoadingProgress(true)
@@ -250,6 +245,47 @@ export default function UserDashboard() {
   const getTotalTopics = () => sections.reduce((sum, s) => sum + s.topics.length, 0)
   const getCompletedTopics = () => progress.filter(p => p.completed).length
   const getCompletionRate = () => getTotalTopics() > 0 ? Math.round((getCompletedTopics() / getTotalTopics()) * 100) : 0
+
+  const filteredSections = sections.map(s => ({ ...s, topics: s.topics.filter(t => t.toLowerCase().includes(filter.toLowerCase() || '')) }))
+
+  // All useEffect hooks must be called in the same order every render
+  useEffect(() => { getSections().then((res) => setSections(res.sections || [])).catch(() => setSections([])) }, [])
+  useEffect(() => { 
+    if (!authed) return; 
+    me().then((r) => { 
+      setUserLabel(r?.user?.username || r?.user?.email || 'Signed in')
+      setIsAdmin(!!r?.user?.is_admin)
+      setCheckingAdmin(false)
+    }).catch(() => {
+      setCheckingAdmin(false)
+    }) 
+  }, [authed])
+  useEffect(() => { if (!authed) return; loadProgress() }, [authed])
+  useEffect(() => { const stored = parseInt(localStorage.getItem('qc_streak_days') || '0', 10); setStreakDays(Number.isFinite(stored) ? stored : 0) }, [])
+
+  // Redirect admin users to admin dashboard
+  useEffect(() => {
+    if (!checkingAdmin && isAdmin) {
+      navigate('/admin', { replace: true })
+    }
+  }, [checkingAdmin, isAdmin, navigate])
+
+  // Show loading while checking admin status
+  if (checkingAdmin) {
+    return <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh',
+      fontSize: '16px',
+      color: '#64748b'
+    }}>Loading...</div>
+  }
+
+  // Don't render user dashboard if user is admin
+  if (isAdmin) {
+    return null
+  }
 
   return (
     <div style={pageStyle}>
@@ -486,5 +522,3 @@ export default function UserDashboard() {
     </div>
   )
 }
-
-
