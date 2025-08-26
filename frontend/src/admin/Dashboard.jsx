@@ -4,6 +4,7 @@ import Users from './Users.jsx'
 import Topics from './Topics.jsx'
 import Analytics from './Analytics.jsx'
 import QuizManager from './QuizManager.jsx'
+import GamificationManager from './GamificationManager.jsx'
 import { useNavigate } from 'react-router-dom'
 
 const layout = { display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: '100vh', background: '#f8fafc' }
@@ -75,6 +76,8 @@ export default function AdminDashboard() {
 				return <Topics />
 			case 'quiz':
 				return <QuizManager />
+			case 'gamification':
+				return <GamificationManager />
 			default:
 				return <Analytics stats={stats} onRefresh={loadStats} />
 		}
@@ -86,6 +89,7 @@ export default function AdminDashboard() {
 			case 'users': return 'User Management'
 			case 'topics': return 'Topics Management'
 			case 'quiz': return 'Quiz Manager'
+			case 'gamification': return 'Gamification Manager'
 			default: return 'System Overview'
 		}
 	}
@@ -96,6 +100,7 @@ export default function AdminDashboard() {
 			case 'users': return 'CRUD'
 			case 'topics': return 'Sections & Topics'
 			case 'quiz': return 'Questions'
+			case 'gamification': return 'Badges & Stats'
 			default: return 'Dashboard'
 		}
 	}
@@ -139,6 +144,10 @@ export default function AdminDashboard() {
 				<button onClick={() => setTab('quiz')} style={navBtn(tab==='quiz')}>
 					<svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="2"><path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/><path d="M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/><path d="M12 3c0 1-1 2-2 2s-2 1-2 2 1 1 2 2 2 1 2 2 1-1 2-2 2-1 2-2-1-1-2-2-2-1-2-2z"/></svg>
 					Quiz Manager
+				</button>
+				<button onClick={() => setTab('gamification')} style={navBtn(tab==='gamification')}>
+					<svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+					Gamification
 				</button>
 				
 				<div style={{ marginTop: 'auto', padding: 12, fontSize: 12, color: '#6b7280' }}>v1.0</div>

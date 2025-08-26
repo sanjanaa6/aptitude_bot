@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { VoiceButton } from './VoiceUtils.jsx'
 
 // Clean Professional UI Components
 const containerStyle = {
@@ -336,8 +337,20 @@ export default function ExplanationView({ topic, explanation, loading, error }) 
         <div style={topicIconStyle}>
           📚
         </div>
-        <div>
-          <h2 style={titleStyle}>{topic}</h2>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <h2 style={titleStyle}>{topic}</h2>
+            <VoiceButton
+              text={`${topic}. Learning Module for Quantitative Concepts.`}
+              type="output"
+              style={{ 
+                width: '40px', 
+                height: '40px', 
+                fontSize: '16px',
+                flexShrink: 0
+              }}
+            />
+          </div>
           <p style={subtitleStyle}>
             Learning Module • Quantitative Concepts
           </p>
@@ -418,8 +431,22 @@ export default function ExplanationView({ topic, explanation, loading, error }) 
             </div>
           </div>
         ) : (
-          <div style={contentTextStyle}>
-            {explanation}
+          <div style={{ position: 'relative' }}>
+            <div style={contentTextStyle}>
+              {explanation}
+            </div>
+            <div style={{ position: 'absolute', top: '8px', right: '8px' }}>
+              <VoiceButton
+                text={explanation}
+                type="output"
+                style={{ 
+                  width: '36px', 
+                  height: '36px', 
+                  fontSize: '14px',
+                  flexShrink: 0
+                }}
+              />
+            </div>
           </div>
         )}
       </div>

@@ -19,10 +19,14 @@ bookmarks_col = None
 notes_col = None
 sections_col = None
 quiz_questions_col = None
+# Gamification collections
+badges_col = None
+user_badges_col = None
+user_stats_col = None
 
 async def init_database():
     """Initialize database connection and collections"""
-    global mongo_client, db, users_col, progress_col, quiz_col, quiz_results_col, bookmarks_col, notes_col, sections_col, quiz_questions_col
+    global mongo_client, db, users_col, progress_col, quiz_col, quiz_results_col, bookmarks_col, notes_col, sections_col, quiz_questions_col, badges_col, user_badges_col, user_stats_col
     
     mongo_client = AsyncIOMotorClient(MONGO_URI)
     db = mongo_client[MONGO_DB]
@@ -36,6 +40,11 @@ async def init_database():
     notes_col = db["notes"]
     sections_col = db["sections"]
     quiz_questions_col = db["quiz_questions"]
+    
+    # Initialize gamification collections
+    badges_col = db["badges"]
+    user_badges_col = db["user_badges"]
+    user_stats_col = db["user_stats"]
     
     # Create indexes with error handling
     try:
@@ -72,12 +81,12 @@ async def init_database():
         await notes_col.create_index([("user_id", 1), ("topic", 1)])
     except Exception:
         pass  # Index might already exist
+    
     try:
         await sections_col.create_index("id", unique=True)
     except Exception:
         pass  # Index might already exist
     
-    # Create indexes for quiz_questions collection
     try:
         await quiz_questions_col.create_index("section")
     except Exception:
@@ -90,6 +99,22 @@ async def init_database():
     
     try:
         await quiz_questions_col.create_index("difficulty")
+    except Exception:
+        pass  # Index might already exist
+
+    # Create indexes for gamification collections
+    try:
+        await badges_col.create_index("id", unique=True)
+    except Exception:
+        pass  # Index might already exist
+    
+    try:
+        await user_badges_col.create_index([("user_id", 1), ("badge_id", 1)], unique=True)
+    except Exception:
+        pass  # Index might already exist
+    
+    try:
+        await user_stats_col.create_index("user_id", unique=True)
     except Exception:
         pass  # Index might already exist
 
@@ -114,5 +139,9 @@ def get_collection(collection_name: str):
         "notes": notes_col,
         "sections": sections_col,
         "quiz_questions": quiz_questions_col,
+        # Gamification collections
+        "badges": badges_col,
+        "user_badges": user_badges_col,
+        "user_stats": user_stats_col,
     }
     return collections.get(collection_name)

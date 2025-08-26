@@ -335,4 +335,81 @@ export const adminGetQuizStats = async () => {
   return response.data
 }
 
+// Gamification APIs
+export const getGamificationStats = async () => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.get(`${API_BASE}/gamification/stats`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const getUserBadges = async () => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.get(`${API_BASE}/gamification/badges`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const getBadgeProgress = async () => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.get(`${API_BASE}/gamification/progress`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const recordUserAction = async (action, data) => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.post(`${API_BASE}/gamification/action`, {
+    action,
+    data
+  }, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const initializeGamification = async () => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.post(`${API_BASE}/gamification/initialize`, {}, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+// Admin Gamification APIs
+export const seedDefaultBadges = async () => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.post(`${API_BASE}/gamification/admin/badges/seed`, {}, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const getAllBadges = async () => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.get(`${API_BASE}/gamification/admin/badges`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const getUserStatsAdmin = async (userId) => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.get(`${API_BASE}/gamification/admin/user/${userId}/stats`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const getLeaderboard = async (limit = 10) => {
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.get(`${API_BASE}/gamification/admin/leaderboard?limit=${limit}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
 

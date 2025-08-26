@@ -25,6 +25,15 @@ A comprehensive learning platform for quantitative topics with AI-powered explan
 - **Easy Management**: Edit, update, and delete your saved content
 - **Quick Access**: Find your saved information instantly
 
+### 🏆 **Gamification System** (NEW!)
+- **Achievement Badges**: Earn badges for completing topics, taking quizzes, and maintaining study streaks
+- **Points & Levels**: Gain experience points and level up as you learn
+- **Study Streaks**: Track your daily learning consistency
+- **Progress Tracking**: Visual progress bars for upcoming achievements
+- **Leaderboards**: Compete with other learners (admin view)
+- **Badge Categories**: Common, Rare, Epic, and Legendary badges with different point values
+- **Real-time Updates**: Badges and points awarded automatically as you learn
+
 ### 🔐 **User Management**
 - **Secure Authentication**: JWT-based login system
 - **User Profiles**: Personalized learning experience
@@ -169,12 +178,15 @@ backend/
 ```
 frontend/src/
 ├── components/
-│   ├── Quiz.jsx      # Quiz interface
-│   ├── Bookmarks.jsx # Bookmarks and notes management
-│   ├── Chat.jsx      # AI chat interface
-│   └── ...           # Other components
-├── api.js            # API client functions
-└── App.jsx           # Main application component
+│   ├── Quiz.jsx          # Quiz interface
+│   ├── Bookmarks.jsx     # Bookmarks and notes management
+│   ├── Gamification.jsx  # Gamification dashboard
+│   ├── Chat.jsx          # AI chat interface
+│   └── ...               # Other components
+├── admin/
+│   └── GamificationManager.jsx  # Admin gamification management
+├── api.js                # API client functions
+└── App.jsx               # Main application component
 ```
 
 ## 🔧 API Endpoints
@@ -197,6 +209,16 @@ frontend/src/
 - `PUT /bookmarks/notes/{id}` - Update a note
 - `DELETE /bookmarks/notes/{id}` - Delete a note
 
+### Gamification Endpoints
+- `GET /gamification/stats` - Get user's gamification statistics
+- `GET /gamification/badges` - Get user's earned badges
+- `GET /gamification/progress` - Get progress towards unearned badges
+- `POST /gamification/action` - Record user action and trigger badge checks
+- `POST /gamification/initialize` - Initialize user's gamification data
+- `POST /gamification/admin/badges/seed` - Seed default badges (admin only)
+- `GET /gamification/admin/badges` - Get all available badges (admin only)
+- `GET /gamification/admin/leaderboard` - Get leaderboard (admin only)
+
 ## 🎨 Customization
 
 ### Adding New Quiz Questions
@@ -214,6 +236,7 @@ Modify the inline styles in the React components or add CSS files for custom sty
 ```bash
 cd backend
 python test_backend.py
+python test_gamification.py
 ```
 
 ### Code Structure

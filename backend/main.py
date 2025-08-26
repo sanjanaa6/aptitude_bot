@@ -17,6 +17,7 @@ from auth import get_current_user, create_access_token, hash_password, verify_pa
 from models import *
 from routers import quiz, bookmarks
 from routers import admin as admin_router
+from routers import gamification
 from database import get_collection
 
 load_dotenv()
@@ -98,6 +99,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Include routers
 app.include_router(quiz.router)
 app.include_router(bookmarks.router)
+app.include_router(gamification.router)
 app.include_router(admin_router.router)
 
 @app.on_event("startup")
@@ -490,6 +492,19 @@ async def update_progress(
         },
         upsert=True
     )
+    
+    # Trigger gamification for topic completion
+    if req.completed:
+        from gamification_service import gamification_service
+        gamification_data = {"topic": req.topic}
+        newly_earned_badges = await gamification_service.check_badges(
+            user_id, "topic_completed", gamification_data
+        )
+        # Add points for topic completion
+        points_result = await gamification_service.add_points(
+            user_id, 10, f"Topic completed: {req.topic}"
+        )
+        logger.info(f"Gamification triggered for topic completion: {req.topic}")
     
     logger.info(f"Update progress request completed for user: {claims.get('email')}")
     return ProgressResponse(

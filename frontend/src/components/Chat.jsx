@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { chat as chatApi } from '../api.js'
+import { VoiceButton } from './VoiceUtils.jsx'
 
 const containerBase = {
 	border: '1px solid #e2e8f0',
@@ -35,14 +36,16 @@ export default function Chat({ height = 'calc(100vh - 130px)' }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [voiceInput, setVoiceInput] = useState('')
   const endRef = useRef(null)
 
-  const send = async () => {
-    const text = input.trim()
+  const send = async (textToSend = null) => {
+    const text = textToSend || input.trim()
     if (!text || loading) return
     const newMessages = [...messages, { role: 'user', content: text }]
     setMessages(newMessages)
     setInput('')
+    setVoiceInput('')
     setLoading(true)
     try {
       const res = await chatApi(newMessages)
@@ -55,12 +58,32 @@ export default function Chat({ height = 'calc(100vh - 130px)' }) {
     }
   }
 
+  const handleVoiceTranscript = (transcript) => {
+    setInput(transcript)
+    send(transcript)
+  }
+
   return (
     <div style={{ ...containerBase, height }}>
       <div style={messagesBox}>
         {messages.map((m, idx) => (
           <div key={idx} style={bubble(m.role)}>
-            {m.content}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+              <div style={{ flex: 1 }}>{m.content}</div>
+              {m.role === 'assistant' && (
+                <VoiceButton
+                  text={m.content}
+                  type="output"
+                  style={{ 
+                    width: '32px', 
+                    height: '32px', 
+                    fontSize: '14px',
+                    flexShrink: 0,
+                    marginTop: '-4px'
+                  }}
+                />
+              )}
+            </div>
           </div>
         ))}
         <div ref={endRef} />
@@ -84,6 +107,12 @@ export default function Chat({ height = 'calc(100vh - 130px)' }) {
               send()
             }
           }}
+        />
+        <VoiceButton
+          onTranscript={handleVoiceTranscript}
+          type="input"
+          disabled={loading}
+          style={{ flexShrink: 0 }}
         />
         <button
           onClick={send}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { getQuizQuestions } from '../api.js'
+// import { VoiceButton } from './VoiceUtils.jsx'
 
 // Clean Professional UI Components
 const containerStyle = {
@@ -176,6 +177,7 @@ export default function Quiz({ selectedTopic }) {
     setError('')
     try {
       const response = await getQuizQuestions(selectedTopic, null, 10)
+      console.log('Quiz data:', response.questions)
       setQuestions(response.questions || [])
       setSelectedAnswers(new Array(response.questions?.length || 0).fill(null))
       setCurrentQuestionIndex(0)
@@ -210,6 +212,7 @@ export default function Quiz({ selectedTopic }) {
   }
 
   const finishQuiz = () => {
+    console.log('Finish quiz called!')
     setShowResults(true)
     setQuizStarted(false)
   }
@@ -319,9 +322,21 @@ export default function Quiz({ selectedTopic }) {
         <div style={questionStyle}>
           <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>🧠</div>
-            <h2 style={{ margin: '0 0 16px 0', color: '#1f2937', fontSize: '32px', fontWeight: '700' }}>
-              Quiz: {selectedTopic}
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
+              <h2 style={{ margin: 0, color: '#1f2937', fontSize: '32px', fontWeight: '700' }}>
+                Quiz: {selectedTopic}
+              </h2>
+              {/* <VoiceButton
+                text={`Quiz: ${selectedTopic}. Test your knowledge with ${questions.length} questions about ${selectedTopic}. Take your time and think carefully about each answer!`}
+                type="output"
+                style={{ 
+                  width: '40px', 
+                  height: '40px', 
+                  fontSize: '16px',
+                  flexShrink: 0
+                }}
+              /> */}
+            </div>
             <p style={{ margin: '0 0 24px 0', color: '#6b7280', fontSize: '18px', lineHeight: '1.6' }}>
               Test your knowledge with {questions.length} questions about {selectedTopic}.<br />
               Take your time and think carefully about each answer!
@@ -352,9 +367,21 @@ export default function Quiz({ selectedTopic }) {
       <div style={containerStyle}>
         <div style={resultCard}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏆</div>
-          <h2 style={{ margin: '0 0 16px 0', color: '#92400e', fontSize: '32px', fontWeight: '700' }}>
-            Quiz Complete!
-          </h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            <h2 style={{ margin: 0, color: '#92400e', fontSize: '32px', fontWeight: '700' }}>
+              Quiz Complete!
+            </h2>
+            {/* <VoiceButton
+              text={`Quiz Complete! You got ${score.correct} out of ${score.total} correct. That's ${score.percentage}%. ${getScoreMessage(score.percentage)}`}
+              type="output"
+              style={{ 
+                width: '40px', 
+                height: '40px', 
+                fontSize: '16px',
+                flexShrink: 0
+              }}
+            /> */}
+          </div>
           <div style={{ fontSize: '24px', fontWeight: '600', color: '#92400e', marginBottom: '8px' }}>
             {score.correct} out of {score.total} correct
           </div>
@@ -405,9 +432,22 @@ export default function Quiz({ selectedTopic }) {
 
       {/* Question */}
       <div style={questionStyle}>
-        <h4 style={{ margin: '0 0 24px 0', color: '#111827', fontSize: '20px', fontWeight: '600', lineHeight: '1.6' }}>
-          {currentQuestion.question}
-        </h4>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '24px' }}>
+          <h4 style={{ margin: 0, color: '#111827', fontSize: '20px', fontWeight: '600', lineHeight: '1.6', flex: 1 }}>
+            {currentQuestion.question}
+          </h4>
+          {/* <VoiceButton
+            text={currentQuestion.question}
+            type="output"
+            style={{ 
+              width: '40px', 
+              height: '40px', 
+              fontSize: '16px',
+              flexShrink: 0,
+              marginTop: '4px'
+            }}
+          /> */}
+        </div>
         
         {/* Options */}
         {currentQuestion.options && currentQuestion.options.map((option, index) => (
@@ -433,7 +473,19 @@ export default function Quiz({ selectedTopic }) {
             }}>
               {String.fromCharCode(65 + index)}
             </div>
-            {option}
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>{option}</span>
+              {/* <VoiceButton
+                text={option}
+                type="output"
+                style={{ 
+                  width: '28px', 
+                  height: '28px', 
+                  fontSize: '12px',
+                  flexShrink: 0
+                }}
+              /> */}
+            </div>
             {showResults && index === currentQuestion.correct_answer && (
               <div style={{ marginLeft: 'auto', fontSize: '20px' }}>✅</div>
             )}
@@ -455,11 +507,9 @@ export default function Quiz({ selectedTopic }) {
         </button>
         
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          {allAnswered && (
-            <button onClick={finishQuiz} style={buttonStyle}>
-              🏁 Finish Quiz
-            </button>
-          )}
+          <button onClick={finishQuiz} style={buttonStyle}>
+            🏁 Finish Quiz
+          </button>
           
           {!isLastQuestion && (
             <button

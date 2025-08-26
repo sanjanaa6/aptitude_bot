@@ -110,6 +110,54 @@ class NoteUpdateRequest(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
 
+# Gamification and Badge models
+class Badge(BaseModel):
+    id: str
+    name: str
+    description: str
+    icon: str  # Icon name or emoji
+    category: Literal["progress", "quiz", "streak", "special", "milestone"]
+    criteria: dict  # Achievement criteria
+    rarity: Literal["common", "rare", "epic", "legendary"] = "common"
+    points: int = 0  # Points awarded for earning this badge
+    created_at: str
+
+class UserBadge(BaseModel):
+    id: str
+    user_id: str
+    badge_id: str
+    earned_at: str
+    progress_towards_next: Optional[float] = None  # For progressive badges
+
+class UserStats(BaseModel):
+    user_id: str
+    total_points: int = 0
+    level: int = 1
+    experience: int = 0
+    experience_to_next_level: int = 100
+    badges_earned: int = 0
+    total_badges: int = 0
+    current_streak: int = 0
+    longest_streak: int = 0
+    topics_completed: int = 0
+    quizzes_taken: int = 0
+    quizzes_passed: int = 0
+    last_activity: Optional[str] = None
+
+class BadgeProgress(BaseModel):
+    badge_id: str
+    badge_name: str
+    progress: float  # 0.0 to 1.0
+    current_value: int
+    target_value: int
+    is_earned: bool = False
+
+class GamificationResponse(BaseModel):
+    user_stats: UserStats
+    badges: List[UserBadge]
+    badge_progress: List[BadgeProgress]
+    recent_achievements: List[UserBadge]
+
 # Auth models
 class RegisterRequest(BaseModel):
     email: str

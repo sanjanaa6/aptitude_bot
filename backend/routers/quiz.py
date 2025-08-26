@@ -71,9 +71,24 @@ async def submit_quiz(
         if quiz_results_col is not None:
             await quiz_results_col.insert_one(quiz_result.model_dump())
         
+        # Trigger gamification for quiz completion
+        from gamification_service import gamification_service
+        gamification_data = {
+            "score": quiz_result.score,
+            "total_questions": quiz_result.total_questions,
+            "time_taken": quiz_result.time_taken,
+            "quiz_id": submission.quiz_id
+        }
+        newly_earned_badges = await gamification_service.check_badges(
+            user_id, "quiz_completed", gamification_data
+        )
+        
         return {
             "message": "Quiz submitted successfully",
-            "result": quiz_result
+            "result": quiz_result,
+            "gamification": {
+                "newly_earned_badges": newly_earned_badges
+            }
         }
         
     except Exception as e:

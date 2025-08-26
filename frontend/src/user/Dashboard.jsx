@@ -5,24 +5,61 @@ import ExplanationView from '../components/ExplanationView.jsx'
 import Chat from '../components/Chat.jsx'
 import Quiz from '../components/Quiz.jsx'
 import Bookmarks from '../components/Bookmarks.jsx'
+import Gamification from '../components/Gamification.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
+import VoiceSettings from '../components/VoiceSettings.jsx'
 import { useNavigate } from 'react-router-dom'
 
-// Clean Professional UI Components
+// Modern Dashboard Styles with Animations
 const pageStyle = { 
   minHeight: '100vh', 
-  background: '#f8fafc', 
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
   fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif', 
   display: 'flex', 
-  flexDirection: 'column' 
+  flexDirection: 'column',
+  position: 'relative',
+  overflow: 'hidden'
+}
+
+const floatingOrbs = {
+  position: 'absolute',
+  top: '10%',
+  right: '5%',
+  width: '200px',
+  height: '200px',
+  background: 'rgba(255, 255, 255, 0.1)',
+  borderRadius: '50%',
+  animation: 'float 6s ease-in-out infinite',
+  zIndex: 0
+}
+
+const floatingOrb2 = {
+  ...floatingOrbs,
+  top: '60%',
+  right: '15%',
+  width: '150px',
+  height: '150px',
+  animationDelay: '2s'
+}
+
+const floatingOrb3 = {
+  ...floatingOrbs,
+  top: '30%',
+  right: '25%',
+  width: '100px',
+  height: '100px',
+  animationDelay: '4s'
 }
 
 const headerStyle = { 
-  background: 'white', 
-  borderBottom: '1px solid #e2e8f0',
-  padding: '20px 24px', 
+  background: 'rgba(255, 255, 255, 0.95)',
+  backdropFilter: 'blur(20px)',
+  borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+  padding: '24px 32px', 
   color: '#1e293b',
-  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  position: 'relative',
+  zIndex: 10
 }
 
 const headerInnerStyle = { 
@@ -31,7 +68,75 @@ const headerInnerStyle = {
   display: 'flex', 
   alignItems: 'center', 
   justifyContent: 'space-between',
-  gap: 12 
+  gap: 16 
+}
+
+const logoContainer = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 16,
+  animation: 'slideInLeft 0.8s ease-out'
+}
+
+const logoIcon = {
+  width: 56, 
+  height: 56, 
+  borderRadius: '16px', 
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  display: 'grid', 
+  placeItems: 'center',
+  boxShadow: '0 8px 25px rgba(102, 126, 234, 0.3)',
+  animation: 'pulse 2s ease-in-out infinite'
+}
+
+const headerText = {
+  animation: 'fadeInUp 0.8s ease-out 0.2s both'
+}
+
+const headerTitle = {
+  fontWeight: '800', 
+  fontSize: '28px', 
+  color: '#1e293b',
+  margin: 0,
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent'
+}
+
+const headerSubtitle = {
+  fontSize: '16px', 
+  color: '#64748b',
+  margin: '4px 0 0 0',
+  fontWeight: '500'
+}
+
+const headerActions = {
+  display: 'flex', 
+  alignItems: 'center', 
+  gap: 16,
+  animation: 'slideInRight 0.8s ease-out 0.4s both'
+}
+
+const statPill = { 
+  display: 'inline-flex', 
+  alignItems: 'center', 
+  gap: 10, 
+  background: 'rgba(255, 255, 255, 0.9)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  borderRadius: '25px', 
+  padding: '12px 20px', 
+  fontSize: '14px',
+  fontWeight: '600',
+  color: '#475569',
+  backdropFilter: 'blur(10px)',
+  transition: 'all 0.3s ease',
+  cursor: 'pointer'
+}
+
+const statPillHover = {
+  transform: 'translateY(-2px)',
+  boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
+  background: 'rgba(255, 255, 255, 1)'
 }
 
 const contentWrapStyle = { 
@@ -39,100 +144,243 @@ const contentWrapStyle = {
   margin: 0, 
   padding: 0, 
   display: 'grid', 
-  gridTemplateColumns: '380px 1fr', 
+  gridTemplateColumns: '400px 1fr', 
   gap: 0, 
-  flex: 1 
+  flex: 1,
+  position: 'relative',
+  zIndex: 5
 }
 
-const statPill = { 
-  display: 'inline-flex', 
-  alignItems: 'center', 
-  gap: 8, 
-  background: '#f1f5f9', 
-  border: '1px solid #e2e8f0', 
-  borderRadius: '20px', 
-  padding: '8px 16px', 
-  fontSize: '14px',
-  fontWeight: '600',
-  color: '#475569'
+const sidebarStyle = {
+  background: 'rgba(255, 255, 255, 0.95)',
+  backdropFilter: 'blur(20px)',
+  borderRight: '1px solid rgba(255, 255, 255, 0.2)',
+  boxShadow: '4px 0 20px rgba(0, 0, 0, 0.1)',
+  animation: 'slideInLeft 0.8s ease-out 0.6s both'
 }
 
-const cardStyle = { 
-  background: 'white', 
-  border: '1px solid #e2e8f0', 
-  borderRadius: '12px', 
-  padding: '24px',
-  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-  transition: 'all 0.2s ease'
+const mainContentStyle = {
+  background: 'rgba(248, 250, 252, 0.8)',
+  backdropFilter: 'blur(20px)',
+  padding: '32px',
+  animation: 'fadeInUp 0.8s ease-out 0.8s both'
 }
 
 const sectionScrollStyle = { 
   maxHeight: 'calc(100vh - 200px)', 
   overflowY: 'auto',
-  padding: '16px'
+  padding: '24px',
+  scrollbarWidth: 'thin',
+  scrollbarColor: 'rgba(102, 126, 234, 0.3) transparent'
 }
 
 const welcomeCard = {
-  ...cardStyle,
-  background: 'white',
-  margin: '20px',
-  textAlign: 'center'
+  background: 'rgba(255, 255, 255, 0.95)',
+  backdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  borderRadius: '20px',
+  padding: '32px',
+  margin: '24px',
+  textAlign: 'center',
+  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+  animation: 'fadeInUp 0.8s ease-out 1s both'
 }
 
 const statsGrid = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-  gap: '16px',
-  margin: '20px'
+  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+  gap: '24px',
+  margin: '24px',
+  animation: 'fadeInUp 0.8s ease-out 1.2s both'
 }
 
-const statCard = (color) => ({
-  ...cardStyle,
-  background: 'white',
-  border: `1px solid ${color}`,
+const statCard = (color, gradient) => ({
+  background: 'rgba(255, 255, 255, 0.95)',
+  backdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  borderRadius: '20px',
+  padding: '32px',
   textAlign: 'center',
   cursor: 'pointer',
-  transition: 'all 0.2s ease'
+  transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  position: 'relative',
+  overflow: 'hidden',
+  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)'
+})
+
+const statCardHover = {
+  transform: 'translateY(-8px) scale(1.02)',
+  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)'
+}
+
+const statCardGlow = (color, gradient) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  height: '4px',
+  background: gradient || `linear-gradient(90deg, ${color}, ${color}80)`,
+  borderRadius: '20px 20px 0 0'
 })
 
 const statNumber = (color) => ({
-  fontSize: '36px',
-  fontWeight: '800',
-  color: color,
-  marginBottom: '8px'
+  fontSize: '48px',
+  fontWeight: '900',
+  background: `linear-gradient(135deg, ${color}, ${color}80)`,
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  marginBottom: '12px',
+  display: 'block'
 })
 
 const statLabel = {
-  fontSize: '14px',
+  fontSize: '16px',
   fontWeight: '600',
   color: '#64748b',
   textTransform: 'uppercase',
-  letterSpacing: '0.5px'
+  letterSpacing: '1px'
 }
 
-const badge = (color) => ({
-  padding: '6px 12px',
-  borderRadius: '20px',
-  fontSize: '12px',
-  fontWeight: '600',
-  color: color,
-  background: `${color}10`,
-  border: `1px solid ${color}30`,
-  display: 'inline-block',
-  margin: '4px'
-})
-
 const tabButton = (active) => ({
-  padding: '12px 20px',
-  border: 'none',
-  borderRadius: '8px',
-  background: active ? '#3b82f6' : '#f1f5f9',
+  padding: '16px 24px',
+  borderRadius: '12px',
+  background: active ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'rgba(255, 255, 255, 0.8)',
   color: active ? 'white' : '#475569',
   cursor: 'pointer',
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: '600',
-  transition: 'all 0.2s ease'
+  transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  backdropFilter: 'blur(10px)',
+  border: active ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 10
 })
+
+const tabButtonHover = {
+  transform: 'translateY(-2px)',
+  boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)'
+}
+
+const tabContainer = {
+  display: 'flex',
+  gap: '16px',
+  marginBottom: '32px',
+  flexWrap: 'wrap',
+  animation: 'fadeInUp 0.8s ease-out 1.4s both'
+}
+
+const cardStyle = {
+  background: 'rgba(255, 255, 255, 0.95)',
+  backdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  borderRadius: '20px',
+  padding: '32px',
+  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.3s ease',
+  animation: 'fadeInUp 0.8s ease-out 1.6s both'
+}
+
+const emptyStateStyle = {
+  textAlign: 'center',
+  padding: '80px 40px',
+  color: '#64748b',
+  animation: 'fadeInUp 0.8s ease-out 1.8s both'
+}
+
+const emptyStateIcon = {
+  width: '80px',
+  height: '80px',
+  marginBottom: '24px',
+  opacity: 0.6
+}
+
+const emptyStateTitle = {
+  margin: '0 0 16px 0',
+  color: '#1e293b',
+  fontSize: '28px',
+  fontWeight: '700'
+}
+
+const emptyStateText = {
+  margin: 0,
+  fontSize: '18px',
+  lineHeight: '1.6'
+}
+
+const searchInputStyle = {
+  width: '100%',
+  padding: '16px 20px',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  borderRadius: '12px',
+  background: 'rgba(255, 255, 255, 0.9)',
+  color: '#1e293b',
+  fontSize: '16px',
+  outline: 'none',
+  transition: 'all 0.3s ease',
+  backdropFilter: 'blur(10px)'
+}
+
+const searchInputFocus = {
+  borderColor: '#667eea',
+  boxShadow: '0 0 0 3px rgba(102, 126, 234, 0.1)',
+  transform: 'scale(1.02)'
+}
+
+const actionButton = {
+  padding: '12px 20px',
+  borderRadius: '12px',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  background: 'rgba(255, 255, 255, 0.9)',
+  color: '#1e293b',
+  cursor: 'pointer',
+  fontSize: '15px',
+  fontWeight: '600',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 10,
+  transition: 'all 0.3s ease',
+  backdropFilter: 'blur(10px)'
+}
+
+const actionButtonHover = {
+  transform: 'translateY(-2px)',
+  boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
+  background: 'rgba(255, 255, 255, 1)'
+}
+
+// CSS Animations
+const animations = `
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+  }
+  
+  @keyframes slideInLeft {
+    from { transform: translateX(-100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes fadeInUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+  }
+`
 
 export default function UserDashboard() {
   const [sections, setSections] = useState([])
@@ -150,6 +398,9 @@ export default function UserDashboard() {
   const [filter, setFilter] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [checkingAdmin, setCheckingAdmin] = useState(true)
+  const [showVoiceSettings, setShowVoiceSettings] = useState(false)
+  const [hoveredStat, setHoveredStat] = useState(null)
+  const [searchFocused, setSearchFocused] = useState(false)
   const navigate = useNavigate()
 
   const loadProgress = async () => {
@@ -182,33 +433,21 @@ export default function UserDashboard() {
       const sanitizeExplanation = (text) => {
         if (!text) return ''
         let cleaned = String(text)
-        // Strip markdown headings
         cleaned = cleaned.replace(/^#{1,6}\s*/gm, '')
-        // Remove bold/italic/code markers
         cleaned = cleaned.replace(/\*\*|__/g, '')
         cleaned = cleaned.replace(/[\*_`~]/g, '')
-        // Remove LaTeX style backslash delimiters and commands
         cleaned = cleaned.replace(/\\[\[\](){}]/g, '')
         cleaned = cleaned.replace(/\\[a-zA-Z]+\{[^}]*\}/g, '')
-        // Remove remaining backslashes
         cleaned = cleaned.replace(/\\/g, '')
-        // Normalize bullets
         cleaned = cleaned.replace(/^\s*[-*+]\s+/gm, '- ')
-        // Insert paragraph breaks before common labels
         cleaned = cleaned.replace(/\s*-\s*(Definition|Purpose|Key Components|Example|Summary)\s*:/gi, '\n\n$1: ')
         cleaned = cleaned.replace(/\b(Definition|Purpose|Key Concepts?|Key Components|Example|Summary)\s*:/gi, '\n\n$1: ')
-        // New lines for numbered items: 1., 2., 3.
         cleaned = cleaned.replace(/\s(\d+)\.\s/g, '\n\n$1) ')
-        // Split long inline lists separated by pipes into lines
         cleaned = cleaned.replace(/\|{2,}/g, ' | ')
-        cleaned = cleaned.replace(/\s\|\s/g, ' | ') // normalize spacing around |
-        // Break on table-like separators
+        cleaned = cleaned.replace(/\s\|\s/g, ' | ')
         cleaned = cleaned.replace(/\s?\|\s?/g, ' | ')
-        // Replace long dashes with line breaks around
         cleaned = cleaned.replace(/\s?-{2,}\s?/g, '\n')
-        // Ensure sentences have spacing
         cleaned = cleaned.replace(/([.!?])\s*(?=[A-Z0-9])/g, '$1\n')
-        // Collapse extra whitespace
         cleaned = cleaned.replace(/\n{3,}/g, '\n\n')
         cleaned = cleaned.replace(/[\t ]{2,}/g, ' ')
         return cleaned.trim()
@@ -223,9 +462,6 @@ export default function UserDashboard() {
   const handleLogout = () => {
     try {
       localStorage.removeItem('qc_token')
-      // Optional: clear user-specific cached items
-      // localStorage.removeItem('qc_streak_days')
-      // localStorage.removeItem('qc_last_active_date')
     } catch (_) {}
     navigate('/login')
   }
@@ -277,8 +513,9 @@ export default function UserDashboard() {
       justifyContent: 'center', 
       alignItems: 'center', 
       height: '100vh',
-      fontSize: '16px',
-      color: '#64748b'
+      fontSize: '18px',
+      color: '#64748b',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     }}>Loading...</div>
   }
 
@@ -288,37 +525,45 @@ export default function UserDashboard() {
   }
 
   return (
+    <>
+      <style>{animations}</style>
     <div style={pageStyle}>
+        {/* Floating Background Elements */}
+        <div style={floatingOrbs}></div>
+        <div style={floatingOrb2}></div>
+        <div style={floatingOrb3}></div>
+
       <header style={headerStyle}>
         <div style={headerInnerStyle}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ 
-              width: 48, 
-              height: 48, 
-              borderRadius: '12px', 
-              background: '#3b82f6', 
-              display: 'grid', 
-              placeItems: 'center'
-            }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+            <div style={logoContainer}>
+              <div style={logoIcon}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
               </svg>
             </div>
-            <div>
-              <div style={{ fontWeight: '700', fontSize: '24px', color: '#1e293b' }}>Quantitative Tutor</div>
-              <div style={{ fontSize: '14px', color: '#64748b' }}>Welcome back, {userLabel}! Ready to learn?</div>
-            </div>
+              <div style={headerText}>
+                <h1 style={headerTitle}>Quantitative Tutor</h1>
+                <p style={headerSubtitle}>Welcome back, {userLabel}! Ready to learn?</p>
+              </div>
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={statPill}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div style={headerActions}>
+              <div 
+                style={{...statPill, ...(hoveredStat === 'streak' ? statPillHover : {})}}
+                onMouseEnter={() => setHoveredStat('streak')}
+                onMouseLeave={() => setHoveredStat(null)}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
               {streakDays} Day Streak
             </div>
-            <div style={statPill}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div 
+                style={{...statPill, ...(hoveredStat === 'progress' ? statPillHover : {})}}
+                onMouseEnter={() => setHoveredStat('progress')}
+                onMouseLeave={() => setHoveredStat(null)}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 12l2 2 4-4"/>
                 <path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/>
                 <path d="M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/>
@@ -327,22 +572,33 @@ export default function UserDashboard() {
               {getCompletionRate()}% Complete
             </div>
             <button
+              onClick={() => setShowVoiceSettings(true)}
+              style={{
+                  ...actionButton,
+                  ...(hoveredStat === 'voice' ? actionButtonHover : {})
+                }}
+                onMouseEnter={() => setHoveredStat('voice')}
+                onMouseLeave={() => setHoveredStat(null)}
+              title="Voice Settings"
+            >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+              Voice
+            </button>
+            <button
               onClick={handleLogout}
               style={{
-                padding: '8px 12px',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-                background: 'white',
-                color: '#1e293b',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 600,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  ...actionButton,
+                  ...(hoveredStat === 'logout' ? actionButtonHover : {})
+                }}
+                onMouseEnter={() => setHoveredStat('logout')}
+                onMouseLeave={() => setHoveredStat(null)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M10 17l5-5-5-5"/>
                 <path d="M15 12H3"/>
                 <path d="M21 19V5a2 2 0 0 0-2-2h-6"/>
@@ -353,26 +609,56 @@ export default function UserDashboard() {
         </div>
       </header>
 
-
-
       {/* Statistics Grid */}
       <div style={statsGrid}>
-        <div style={statCard('#3b82f6')}>
+                       <div 
+               style={{
+                 ...statCard('#3b82f6', 'linear-gradient(135deg, #3b82f6, #1d4ed8)'),
+                 ...(hoveredStat === 'total' ? statCardHover : {})
+               }}
+               onMouseEnter={() => setHoveredStat('total')}
+               onMouseLeave={() => setHoveredStat(null)}
+             >
+               <div style={statCardGlow('#3b82f6', 'linear-gradient(135deg, #3b82f6, #1d4ed8)')}></div>
           <div style={statNumber('#3b82f6')}>{getTotalTopics()}</div>
           <div style={statLabel}>Total Topics</div>
         </div>
         
-        <div style={statCard('#10b981')}>
+                     <div 
+             style={{
+               ...statCard('#10b981', 'linear-gradient(135deg, #10b981, #059669)'),
+               ...(hoveredStat === 'completed' ? statCardHover : {})
+             }}
+             onMouseEnter={() => setHoveredStat('completed')}
+             onMouseLeave={() => setHoveredStat(null)}
+           >
+             <div style={statCardGlow('#10b981', 'linear-gradient(135deg, #10b981, #059669)')}></div>
           <div style={statNumber('#10b981')}>{getCompletedTopics()}</div>
           <div style={statLabel}>Completed</div>
         </div>
         
-        <div style={statCard('#f59e0b')}>
+                     <div 
+             style={{
+               ...statCard('#f59e0b', 'linear-gradient(135deg, #f59e0b, #d97706)'),
+               ...(hoveredStat === 'streak' ? statCardHover : {})
+             }}
+             onMouseEnter={() => setHoveredStat('streak')}
+             onMouseLeave={() => setHoveredStat(null)}
+           >
+             <div style={statCardGlow('#f59e0b', 'linear-gradient(135deg, #f59e0b, #d97706)')}></div>
           <div style={statNumber('#f59e0b')}>{streakDays}</div>
           <div style={statLabel}>Streak Days</div>
         </div>
         
-        <div style={statCard('#ef4444')}>
+                     <div 
+             style={{
+               ...statCard('#ef4444', 'linear-gradient(135deg, #ef4444, #dc2626)'),
+               ...(hoveredStat === 'progress' ? statCardHover : {})
+             }}
+             onMouseEnter={() => setHoveredStat('progress')}
+             onMouseLeave={() => setHoveredStat(null)}
+           >
+             <div style={statCardGlow('#ef4444', 'linear-gradient(135deg, #ef4444, #dc2626)')}></div>
           <div style={statNumber('#ef4444')}>{getCompletionRate()}%</div>
           <div style={statLabel}>Progress</div>
         </div>
@@ -380,23 +666,19 @@ export default function UserDashboard() {
 
       <div style={contentWrapStyle}>
         {/* Left Sidebar */}
-        <div style={{ background: 'white', borderRight: '1px solid #e2e8f0' }}>
+          <div style={sidebarStyle}>
           <div style={sectionScrollStyle}>
-            <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '24px' }}>
               <input
                 type="text"
                 placeholder="Search topics..."
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
                 style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  background: 'white',
-                  color: '#1e293b',
-                  fontSize: '14px',
-                  outline: 'none'
+                    ...searchInputStyle,
+                    ...(searchFocused ? searchInputFocus : {})
                 }}
               />
             </div>
@@ -411,14 +693,19 @@ export default function UserDashboard() {
         </div>
 
         {/* Main Content */}
-        <div style={{ background: '#f8fafc', padding: '24px' }}>
+          <div style={mainContentStyle}>
           {/* Tab Navigation */}
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
+            <div style={tabContainer}>
             <button 
               onClick={() => setTab('explanation')} 
-              style={tabButton(tab === 'explanation')}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+                style={{
+                  ...tabButton(tab === 'explanation'),
+                  ...(tab === 'explanation' ? {} : {})
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
               </svg>
@@ -426,9 +713,14 @@ export default function UserDashboard() {
             </button>
             <button 
               onClick={() => setTab('quiz')} 
-              style={tabButton(tab === 'quiz')}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+                style={{
+                  ...tabButton(tab === 'quiz'),
+                  ...(tab === 'quiz' ? {} : {})
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 12l2 2 4-4"/>
                 <path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/>
                 <path d="M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/>
@@ -438,21 +730,45 @@ export default function UserDashboard() {
             </button>
             <button 
               onClick={() => setTab('chat')} 
-              style={tabButton(tab === 'chat')}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+                style={{
+                  ...tabButton(tab === 'chat'),
+                  ...(tab === 'chat' ? {} : {})
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
               Chat
             </button>
             <button 
               onClick={() => setTab('bookmarks')} 
-              style={tabButton(tab === 'bookmarks')}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+                style={{
+                  ...tabButton(tab === 'bookmarks'),
+                  ...(tab === 'bookmarks' ? {} : {})
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
               </svg>
               Bookmarks
+            </button>
+            <button 
+              onClick={() => setTab('gamification')} 
+                style={{
+                  ...tabButton(tab === 'gamification'),
+                  ...(tab === 'gamification' ? {} : {})
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              Achievements
             </button>
           </div>
 
@@ -467,15 +783,15 @@ export default function UserDashboard() {
                   error={error}
                 />
               ) : (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
-                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1" style={{ marginBottom: '16px' }}>
+                  <div style={emptyStateStyle}>
+                    <svg style={emptyStateIcon} viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                   </svg>
-                  <h3 style={{ margin: '0 0 12px 0', color: '#1e293b', fontSize: '24px' }}>
+                    <h3 style={emptyStateTitle}>
                     Choose a Topic to Start Learning
                   </h3>
-                  <p style={{ margin: 0, fontSize: '16px' }}>
+                    <p style={emptyStateText}>
                     Select any topic from the left sidebar to begin your learning journey.
                   </p>
                 </div>
@@ -488,17 +804,17 @@ export default function UserDashboard() {
               {selectedTopic ? (
                 <Quiz selectedTopic={selectedTopic} />
               ) : (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
-                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1" style={{ marginBottom: '16px' }}>
+                  <div style={emptyStateStyle}>
+                    <svg style={emptyStateIcon} viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1">
                     <path d="M9 12l2 2 4-4"/>
                     <path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/>
                     <path d="M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/>
                     <path d="M12 3c0 1-1 2-2 2s-2 1-2 2 1 1 2 2 2 1 2 2 1-1 2-2 2-1 2-2-1-1-2-2-2-1-2-2z"/>
                   </svg>
-                  <h3 style={{ margin: '0 0 12px 0', color: '#1e293b', fontSize: '24px' }}>
+                    <h3 style={emptyStateTitle}>
                     Select a Topic for Quiz
                   </h3>
-                  <p style={{ margin: 0, fontSize: '16px' }}>
+                    <p style={emptyStateText}>
                     Choose a topic from the sidebar to test your knowledge with interactive quizzes.
                   </p>
                 </div>
@@ -517,8 +833,36 @@ export default function UserDashboard() {
               <Bookmarks />
             </div>
           )}
+
+          {tab === 'gamification' && (
+            <div style={{ padding: 0, background: 'transparent' }}>
+              <Gamification />
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Voice Settings Modal */}
+      {showVoiceSettings && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+            padding: '20px',
+            backdropFilter: 'blur(10px)',
+            animation: 'fadeInUp 0.3s ease-out'
+        }}>
+          <VoiceSettings onClose={() => setShowVoiceSettings(false)} />
+        </div>
+      )}
     </div>
+    </>
   )
 }
