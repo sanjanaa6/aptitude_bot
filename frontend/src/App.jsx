@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate, useLocation } from 'react-router-dom'
 import LoginPage from './pages/LoginPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import AdminDashboard from './admin/Dashboard.jsx'
 import UserDashboard from './user/Dashboard.jsx'
 import ProtectedRoute, { AdminRoute } from './ProtectedRoute.jsx'
 import { me } from './api.js'
+import ExplanationView from './components/ExplanationView.jsx'
 
 const pageStyle = {
   minHeight: '100vh',
@@ -124,6 +125,7 @@ export default function App() {
             <UserDashboard />
           </ProtectedRoute>
         } />
+        
         <Route path="/admin" element={
           <AdminRoute>
             <AdminDashboard />
@@ -132,5 +134,15 @@ export default function App() {
         <Route path="/" element={<SmartRedirect />} />
       </Routes>
     </BrowserRouter>
+  )
+}
+
+function FullExplanationPage() {
+  const location = useLocation()
+  const state = location.state || {}
+  return (
+    <div style={{ padding: 16 }}>
+      <ExplanationView topic={state.topic} explanation={state.explanation} loading={false} error={null} />
+    </div>
   )
 }

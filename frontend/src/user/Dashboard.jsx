@@ -6,6 +6,7 @@ import Chat from '../components/Chat.jsx'
 import Quiz from '../components/Quiz.jsx'
 import Bookmarks from '../components/Bookmarks.jsx'
 import Gamification from '../components/Gamification.jsx'
+import LearningPathGenerator from '../components/LearningPathGenerator.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
 import VoiceSettings from '../components/VoiceSettings.jsx'
 import { useNavigate } from 'react-router-dom'
@@ -401,6 +402,7 @@ export default function UserDashboard() {
   const [showVoiceSettings, setShowVoiceSettings] = useState(false)
   const [hoveredStat, setHoveredStat] = useState(null)
   const [searchFocused, setSearchFocused] = useState(false)
+  const [leftTab, setLeftTab] = useState('learn')
   const navigate = useNavigate()
 
   const loadProgress = async () => {
@@ -610,92 +612,93 @@ export default function UserDashboard() {
       </header>
 
       {/* Statistics Grid */}
-      <div style={statsGrid}>
-                       <div 
-               style={{
-                 ...statCard('#3b82f6', 'linear-gradient(135deg, #3b82f6, #1d4ed8)'),
-                 ...(hoveredStat === 'total' ? statCardHover : {})
-               }}
-               onMouseEnter={() => setHoveredStat('total')}
-               onMouseLeave={() => setHoveredStat(null)}
-             >
-               <div style={statCardGlow('#3b82f6', 'linear-gradient(135deg, #3b82f6, #1d4ed8)')}></div>
-          <div style={statNumber('#3b82f6')}>{getTotalTopics()}</div>
-          <div style={statLabel}>Total Topics</div>
-        </div>
-        
-                     <div 
-             style={{
-               ...statCard('#10b981', 'linear-gradient(135deg, #10b981, #059669)'),
-               ...(hoveredStat === 'completed' ? statCardHover : {})
-             }}
-             onMouseEnter={() => setHoveredStat('completed')}
-             onMouseLeave={() => setHoveredStat(null)}
-           >
-             <div style={statCardGlow('#10b981', 'linear-gradient(135deg, #10b981, #059669)')}></div>
-          <div style={statNumber('#10b981')}>{getCompletedTopics()}</div>
-          <div style={statLabel}>Completed</div>
-        </div>
-        
-                     <div 
-             style={{
-               ...statCard('#f59e0b', 'linear-gradient(135deg, #f59e0b, #d97706)'),
-               ...(hoveredStat === 'streak' ? statCardHover : {})
-             }}
-             onMouseEnter={() => setHoveredStat('streak')}
-             onMouseLeave={() => setHoveredStat(null)}
-           >
-             <div style={statCardGlow('#f59e0b', 'linear-gradient(135deg, #f59e0b, #d97706)')}></div>
-          <div style={statNumber('#f59e0b')}>{streakDays}</div>
-          <div style={statLabel}>Streak Days</div>
-        </div>
-        
-                     <div 
-             style={{
-               ...statCard('#ef4444', 'linear-gradient(135deg, #ef4444, #dc2626)'),
-               ...(hoveredStat === 'progress' ? statCardHover : {})
-             }}
-             onMouseEnter={() => setHoveredStat('progress')}
-             onMouseLeave={() => setHoveredStat(null)}
-           >
-             <div style={statCardGlow('#ef4444', 'linear-gradient(135deg, #ef4444, #dc2626)')}></div>
-          <div style={statNumber('#ef4444')}>{getCompletionRate()}%</div>
-          <div style={statLabel}>Progress</div>
-        </div>
-      </div>
-
+      
       <div style={contentWrapStyle}>
         {/* Left Sidebar */}
           <div style={sidebarStyle}>
           <div style={sectionScrollStyle}>
-              <div style={{ marginBottom: '24px' }}>
-              <input
-                type="text"
-                placeholder="Search topics..."
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                style={{
-                    ...searchInputStyle,
-                    ...(searchFocused ? searchInputFocus : {})
-                }}
-              />
-            </div>
-            
-            <SectionsPanel
-              sections={filteredSections}
-              selected={selectedTopic}
-              onSelect={handleSelect}
-              progress={progress}
-            />
+              <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                <button
+                  onClick={() => setLeftTab('learn')}
+                  style={{
+                    padding: '10px 12px',
+                    borderRadius: 10,
+                    border: '1px solid #e5e7eb',
+                    background: leftTab === 'learn' ? '#eef2ff' : 'white',
+                    color: leftTab === 'learn' ? '#3730a3' : '#111827',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  Learn
+                </button>
+                <button
+                  onClick={() => setLeftTab('generator')}
+                  style={{
+                    padding: '10px 12px',
+                    borderRadius: 10,
+                    border: '1px solid #e5e7eb',
+                    background: leftTab === 'generator' ? '#eef2ff' : 'white',
+                    color: leftTab === 'generator' ? '#3730a3' : '#111827',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>
+                  Learning Path
+                </button>
+              </div>
+              {leftTab === 'learn' ? (
+                <>
+                  <div style={{ marginBottom: '24px' }}>
+                  <input
+                    type="text"
+                    placeholder="Search topics..."
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setSearchFocused(false)}
+                    style={{
+                        ...searchInputStyle,
+                        ...(searchFocused ? searchInputFocus : {})
+                    }}
+                  />
+                </div>
+                
+                <SectionsPanel
+                  sections={filteredSections}
+                  selected={selectedTopic}
+                  onSelect={handleSelect}
+                  progress={progress}
+                />
+                </>
+              ) : (
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.8)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: 12,
+                  padding: 16,
+                  color: '#475569'
+                }}>
+                  <div style={{ fontWeight: 700, marginBottom: 8 }}>Learning Path Generator</div>
+                  <div style={{ fontSize: 13 }}>
+                    Coming soon. You will be able to generate a custom path.
+                  </div>
+                </div>
+              )}
           </div>
         </div>
 
         {/* Main Content */}
           <div style={mainContentStyle}>
           {/* Tab Navigation */}
-            <div style={tabContainer}>
+            {leftTab === 'learn' ? (
+              <div style={tabContainer}>
             <button 
               onClick={() => setTab('explanation')} 
                 style={{
@@ -771,9 +774,12 @@ export default function UserDashboard() {
               Achievements
             </button>
           </div>
+            ) : (
+              <LearningPathGenerator />
+            )}
 
           {/* Tab Content */}
-          {tab === 'explanation' && (
+          {leftTab === 'learn' && tab === 'explanation' && (
             <div style={cardStyle}>
               {selectedTopic ? (
                 <ExplanationView
@@ -799,7 +805,7 @@ export default function UserDashboard() {
             </div>
           )}
 
-          {tab === 'quiz' && (
+          {leftTab === 'learn' && tab === 'quiz' && (
             <div style={cardStyle}>
               {selectedTopic ? (
                 <Quiz selectedTopic={selectedTopic} />
@@ -822,19 +828,19 @@ export default function UserDashboard() {
             </div>
           )}
 
-          {tab === 'chat' && (
+          {leftTab === 'learn' && tab === 'chat' && (
             <div style={cardStyle}>
               <Chat selectedTopic={selectedTopic} />
             </div>
           )}
 
-          {tab === 'bookmarks' && (
+          {leftTab === 'learn' && tab === 'bookmarks' && (
             <div style={cardStyle}>
               <Bookmarks />
             </div>
           )}
 
-          {tab === 'gamification' && (
+          {leftTab === 'learn' && tab === 'gamification' && (
             <div style={{ padding: 0, background: 'transparent' }}>
               <Gamification />
             </div>

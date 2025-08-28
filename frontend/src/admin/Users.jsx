@@ -19,7 +19,7 @@ const subtitle = { margin: '8px 0 0 0', fontSize: '16px', color: '#6b7280', font
 const card = { 
   background: 'white', 
   border: '1px solid #e5e7eb', 
-  borderRadius: '16px', 
+  borderRadius: '16px',         
   padding: '24px', 
   marginBottom: '24px',
   boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
