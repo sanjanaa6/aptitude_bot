@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { generateCurriculumFromTopic } from './utils.js'
+import { generateCurriculumFromTopic, generateCurriculumFromTopicAI } from './utils.js'
 import { explainTopic } from '../../api.js'
 
 const wrap = { display: 'flex', flexDirection: 'column', gap: 16 }
@@ -54,10 +54,10 @@ export default function Generator() {
     return t
   }
 
-  const onGenerate = () => {
-    const next = generateCurriculumFromTopic(topic)
-    setCurriculum(next)
+  const onGenerate = async () => {
     setSelected(null)
+    const next = await generateCurriculumFromTopicAI(topic)
+    setCurriculum(next)
     try {
       sessionStorage.setItem('lp_topic', topic)
       sessionStorage.setItem('lp_curriculum', JSON.stringify(next))

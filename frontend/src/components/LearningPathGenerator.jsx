@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { generateCurriculumFromTopic } from './learningPath/utils.js'
+import { generateCurriculumFromTopic, generateCurriculumFromTopicAI } from './learningPath/utils.js'
 import { explainTopic } from '../api.js'
 
 const wrap = { display: 'flex', flexDirection: 'column', gap: 12 }
@@ -22,9 +22,10 @@ export default function LearningPathGenerator() {
   const [detailTab, setDetailTab] = useState('content') // 'content' | 'quiz'
   const [loadingExplain, setLoadingExplain] = useState(false)
 
-  const onGenerate = () => {
-    setCurriculum(generateCurriculumFromTopic(topic))
+  const onGenerate = async () => {
     setSelected(null)
+    const next = await generateCurriculumFromTopicAI(topic)
+    setCurriculum(next)
   }
 
   const onReset = () => {
