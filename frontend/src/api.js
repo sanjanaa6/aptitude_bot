@@ -90,18 +90,28 @@ export const getQuizTopics = async () => {
 
 export const getQuizQuestions = async (topic, difficulty, questionCount) => {
   console.log('API call - getQuizQuestions:', { topic, difficulty, questionCount })
-  try {
-    const response = await axios.post(`${API_BASE}/quiz/questions`, {
-      topic,
-      difficulty,
-      question_count: questionCount
-    })
-    console.log('API response:', response.data)
-    return response.data
-  } catch (error) {
-    console.error('API error:', error)
-    throw error
-  }
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.post(`${API_BASE}/quiz/questions`, {
+    topic,
+    difficulty,
+    question_count: questionCount
+  }, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
+}
+
+export const generateQuizQuestions = async (topic, explanation, questionCount = 5) => {
+  console.log('API call - generateQuizQuestions:', { topic, explanation: explanation.substring(0, 100) + '...', questionCount })
+  const token = localStorage.getItem('qc_token')
+  const response = await axios.post(`${API_BASE}/quiz/generate`, {
+    topic,
+    explanation,
+    question_count: questionCount
+  }, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return response.data
 }
 
 export const submitQuiz = async (quizId, answers, timeTaken) => {
