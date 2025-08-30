@@ -18,6 +18,7 @@ from models import *
 from routers import quiz, bookmarks
 from routers import admin as admin_router
 from routers import gamification
+from routers import learning
 from database import get_collection
 
 load_dotenv()
@@ -101,6 +102,7 @@ app.include_router(quiz.router)
 app.include_router(bookmarks.router)
 app.include_router(gamification.router)
 app.include_router(admin_router.router)
+app.include_router(learning.router)
 
 @app.on_event("startup")
 async def on_startup() -> None:

@@ -53,18 +53,37 @@ export default function TopicsPanel({ topics, selected, onSelect, enableAdd = fa
   }, [topics])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: 6
+    }}>
       {enableAdd && (
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: 6
+        }}>
           <input
             value={newTopic}
             onChange={(e) => setNewTopic(e.target.value)}
             placeholder="Add new topic"
-            style={{ flex: 1, padding: '8px 10px', border: '1px solid #e5e7eb', borderRadius: 6 }}
+            style={{ 
+              flex: 1, 
+              padding: '8px 10px', 
+              border: '1px solid #e5e7eb', 
+              borderRadius: 6
+            }}
           />
           <button
             onClick={() => { const t = newTopic.trim(); if (!t) return; onAdd?.(t); setNewTopic('') }}
-            style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#111827', color: 'white', cursor: 'pointer' }}
+            style={{ 
+              padding: '8px 10px', 
+              borderRadius: 6, 
+              border: '1px solid #e5e7eb', 
+              background: '#111827', 
+              color: 'white', 
+              cursor: 'pointer'
+            }}
           >
             Add
           </button>

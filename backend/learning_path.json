@@ -1,0 +1,171 @@
+{
+  "Python": [
+    {
+      "progress": 1,
+      "topic": "Variables & Data Types",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["variables", "integers", "strings", "booleans", "type conversion"],
+      "prerequisites": []
+    },
+    {
+      "progress": 2,
+      "topic": "Basic Operations & Input/Output",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["arithmetic operators", "input()", "print()", "string formatting"],
+      "prerequisites": ["Variables & Data Types"]
+    },
+    {
+      "progress": 3,
+      "topic": "Conditional Statements",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["if-else", "elif", "comparison operators", "logical operators"],
+      "prerequisites": ["Basic Operations & Input/Output"]
+    },
+    {
+      "progress": 4,
+      "topic": "Loops",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["for loops", "while loops", "range()", "break", "continue"],
+      "prerequisites": ["Conditional Statements"]
+    },
+    {
+      "progress": 5,
+      "topic": "Functions",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["function definition", "parameters", "return values", "scope"],
+      "prerequisites": ["Loops"]
+    }
+  ],
+  "JavaScript": [
+    {
+      "progress": 1,
+      "topic": "Variables & Data Types",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["var", "let", "const", "numbers", "strings", "booleans"],
+      "prerequisites": []
+    },
+    {
+      "progress": 2,
+      "topic": "Basic Operations & Console",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["arithmetic operators", "console.log()", "string concatenation"],
+      "prerequisites": ["Variables & Data Types"]
+    },
+    {
+      "progress": 3,
+      "topic": "Conditional Statements",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["if-else", "switch", "comparison operators", "logical operators"],
+      "prerequisites": ["Basic Operations & Console"]
+    },
+    {
+      "progress": 4,
+      "topic": "Loops",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["for loops", "while loops", "do-while", "break", "continue"],
+      "prerequisites": ["Conditional Statements"]
+    },
+    {
+      "progress": 5,
+      "topic": "Functions",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["function declaration", "function expression", "arrow functions", "parameters"],
+      "prerequisites": ["Loops"]
+    }
+  ],
+  "Java": [
+    {
+      "progress": 1,
+      "topic": "Variables & Data Types",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["int", "double", "String", "boolean", "type casting"],
+      "prerequisites": []
+    },
+    {
+      "progress": 2,
+      "topic": "Basic Operations & Input/Output",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["arithmetic operators", "Scanner", "System.out.println()"],
+      "prerequisites": ["Variables & Data Types"]
+    },
+    {
+      "progress": 3,
+      "topic": "Control Structures",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["if-else", "switch", "comparison operators", "logical operators"],
+      "prerequisites": ["Basic Operations & Input/Output"]
+    },
+    {
+      "progress": 4,
+      "topic": "Loops",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["for loops", "while loops", "do-while", "break", "continue"],
+      "prerequisites": ["Control Structures"]
+    },
+    {
+      "progress": 5,
+      "topic": "Methods",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["method definition", "parameters", "return types", "method overloading"],
+      "prerequisites": ["Loops"]
+    }
+  ],
+  "C++": [
+    {
+      "progress": 1,
+      "topic": "Variables & Data Types",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["int", "double", "char", "bool", "type casting"],
+      "prerequisites": []
+    },
+    {
+      "progress": 2,
+      "topic": "Basic Operations & Input/Output",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["arithmetic operators", "cin", "cout", "iostream"],
+      "prerequisites": ["Variables & Data Types"]
+    },
+    {
+      "progress": 3,
+      "topic": "Control Structures",
+      "needs_coding": true,
+      "difficulty": "beginner",
+      "concepts": ["if-else", "switch", "comparison operators", "logical operators"],
+      "prerequisites": ["Basic Operations & Input/Output"]
+    },
+    {
+      "progress": 4,
+      "topic": "Loops",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["for loops", "while loops", "do-while", "break", "continue"],
+      "prerequisites": ["Control Structures"]
+    },
+    {
+      "progress": 5,
+      "topic": "Functions",
+      "needs_coding": true,
+      "difficulty": "intermediate",
+      "concepts": ["function definition", "parameters", "return types", "function overloading"],
+      "prerequisites": ["Loops"]
+    }
+  ]
+}
+

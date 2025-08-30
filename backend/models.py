@@ -192,3 +192,37 @@ class SectionDoc(BaseModel):
     id: str
     title: str
     topics: List[str]
+
+# Learning Models
+class MessageRequest(BaseModel):
+    session_id: str
+    message: str
+    email: Optional[str] = None
+
+class SessionRequest(BaseModel):
+    session_id: str
+    email: Optional[str] = None
+
+class CodeExecutionRequest(BaseModel):
+    session_id: str
+    code: str
+    language: str
+    input_data: Optional[str] = None
+    email: Optional[str] = None
+
+class LearningSession(BaseModel):
+    session_id: str
+    email: str
+    language: str
+    progress: int
+    current_topic: dict
+    completed_topics: List[str]
+    created_at: datetime
+    last_accessed: datetime
+
+class UserProgress(BaseModel):
+    email: str
+    language: str
+    progress: int
+    completed_topics: List[str]
+    last_updated: datetime
