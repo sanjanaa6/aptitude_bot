@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '../contexts/ThemeContext.jsx';
 
 const CustomNavbar = ({ 
   title = "Quantitative Tutor", 
@@ -11,14 +12,15 @@ const CustomNavbar = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const { isDark, toggleTheme, colors } = useTheme();
 
   const navbarStyle = {
-    background: 'rgba(15, 23, 42, 0.95)',
+    background: colors.surface,
     backdropFilter: 'blur(20px)',
-    borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+    borderBottom: `1px solid ${colors.border}`,
     padding: '16px 24px',
-    color: '#e2e8f0',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+    color: colors.text,
+    boxShadow: `0 8px 32px ${colors.shadow}`,
     position: 'sticky',
     top: 0,
     zIndex: 1000
@@ -58,7 +60,7 @@ const CustomNavbar = ({
   const headerTitle = {
     fontWeight: '800',
     fontSize: '28px',
-    color: '#e2e8f0',
+    color: colors.text,
     margin: 0,
     background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)',
     WebkitBackgroundClip: 'text',
@@ -67,7 +69,7 @@ const CustomNavbar = ({
 
   const headerSubtitle = {
     fontSize: '16px',
-    color: '#94a3b8',
+    color: colors.textSecondary,
     margin: '4px 0 0 0',
     fontWeight: '500'
   };
@@ -80,9 +82,9 @@ const CustomNavbar = ({
   };
 
   const actionButton = {
-    background: 'rgba(148, 163, 184, 0.1)',
-    border: '1px solid rgba(148, 163, 184, 0.2)',
-    color: '#e2e8f0',
+    background: colors.hover,
+    border: `1px solid ${colors.borderSecondary}`,
+    color: colors.text,
     padding: '8px 16px',
     borderRadius: '8px',
     cursor: 'pointer',
@@ -96,16 +98,16 @@ const CustomNavbar = ({
   };
 
   const actionButtonHover = {
-    background: 'rgba(148, 163, 184, 0.2)',
-    borderColor: 'rgba(139, 92, 246, 0.4)',
+    background: colors.hover,
+    borderColor: colors.accent,
     transform: 'translateY(-1px)',
-    boxShadow: '0 4px 12px rgba(139, 92, 246, 0.2)'
+    boxShadow: `0 4px 12px ${colors.accent}`
   };
 
   const toggleButton = {
-    background: 'rgba(148, 163, 184, 0.1)',
-    border: '1px solid rgba(148, 163, 184, 0.2)',
-    color: '#e2e8f0',
+    background: colors.hover,
+    border: `1px solid ${colors.borderSecondary}`,
+    color: colors.text,
     padding: '8px',
     borderRadius: '8px',
     cursor: 'pointer',
@@ -118,8 +120,8 @@ const CustomNavbar = ({
   };
 
   const toggleButtonHover = {
-    background: 'rgba(148, 163, 184, 0.2)',
-    borderColor: 'rgba(139, 92, 246, 0.4)',
+    background: colors.hover,
+    borderColor: colors.accent,
     transform: 'scale(1.05)',
   };
 
@@ -128,30 +130,30 @@ const CustomNavbar = ({
     top: '100%',
     left: 0,
     right: 0,
-    background: 'rgba(15, 23, 42, 0.98)',
+    background: colors.surface,
     backdropFilter: 'blur(20px)',
-    borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+    borderBottom: `1px solid ${colors.border}`,
     padding: '16px',
     display: isMenuOpen ? 'block' : 'none',
     animation: isMenuOpen ? 'slideDown 0.3s ease-out' : 'none',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+    boxShadow: `0 8px 32px ${colors.shadow}`,
     zIndex: 999
   };
 
   const mobileMenuItem = {
     padding: '12px 16px',
-    borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+    borderBottom: `1px solid ${colors.border}`,
     display: 'flex',
     alignItems: 'center',
     gap: 12,
-    color: '#e2e8f0',
+    color: colors.text,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
   };
 
   const mobileMenuItemHover = {
-    background: 'rgba(148, 163, 184, 0.1)',
-    borderLeft: '3px solid #8b5cf6'
+    background: colors.hover,
+    borderLeft: `3px solid ${colors.primary}`
   };
 
   return (
@@ -170,8 +172,31 @@ const CustomNavbar = ({
           </div>
         </div>
 
-        {/* Desktop Actions - Only Toggle Button */}
+        {/* Desktop Actions */}
         <div style={navbarActions} className="navbar-actions">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              ...toggleButton,
+              ...(hoveredItem === 'theme' ? toggleButtonHover : {})
+            }}
+            onMouseEnter={() => setHoveredItem('theme')}
+            onMouseLeave={() => setHoveredItem(null)}
+            title={isDark ? "Switch to Light Theme" : "Switch to Dark Theme"}
+          >
+            {isDark ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            )}
+          </button>
+          
           {/* Mobile Toggle Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -196,6 +221,27 @@ const CustomNavbar = ({
 
       {/* Mobile Menu */}
       <div style={mobileMenuStyle}>
+        <div
+          style={{
+            ...mobileMenuItem,
+            ...(hoveredItem === 'mobile-theme' ? mobileMenuItemHover : {})
+          }}
+          onMouseEnter={() => setHoveredItem('mobile-theme')}
+          onMouseLeave={() => setHoveredItem(null)}
+          onClick={toggleTheme}
+        >
+          {isDark ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          )}
+          {isDark ? "Switch to Light Theme" : "Switch to Dark Theme"}
+        </div>
         <div
           style={{
             ...mobileMenuItem,

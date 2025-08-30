@@ -7,6 +7,7 @@ import UserDashboard from './user/Dashboard.jsx'
 import ProtectedRoute, { AdminRoute } from './ProtectedRoute.jsx'
 import { me } from './api.js'
 import ExplanationView from './components/ExplanationView.jsx'
+import { ThemeProvider } from './contexts/ThemeContext.jsx'
 
 const pageStyle = {
   minHeight: '100vh',
@@ -116,24 +117,26 @@ function SmartRedirect() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <UserDashboard />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/admin" element={
-          <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        } />
-        <Route path="/" element={<SmartRedirect />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
+          <Route path="/" element={<SmartRedirect />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

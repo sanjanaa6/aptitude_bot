@@ -12,18 +12,19 @@ import VoiceSettings from '../components/VoiceSettings.jsx'
 import LearningBot from '../components/learningBot/LearningBot.jsx'
 import { useNavigate } from 'react-router-dom'
 import CustomNavbar from '../components/CustomNavbar.jsx'
+import { useTheme } from '../contexts/ThemeContext.jsx'
 
-// Dark Space Theme Dashboard Styles
-const pageStyle = { 
+// Theme-aware Dashboard Styles
+const getPageStyle = (colors) => ({ 
   minHeight: '100vh', 
-  background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
+  background: colors.background,
   fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif', 
   display: 'flex', 
   flexDirection: 'column',
   position: 'relative',
   overflow: 'hidden',
-  color: '#e2e8f0'
-}
+  color: colors.text
+})
 
 const mainContentStyle = {
   display: 'grid',
@@ -33,86 +34,86 @@ const mainContentStyle = {
   position: 'relative'
 }
 
-const sidebarStyle = (isMobileMenuOpen) => ({
-  background: 'rgba(15, 23, 42, 0.95)',
-  borderRight: '1px solid rgba(148, 163, 184, 0.1)',
+const getSidebarStyle = (colors, isMobileMenuOpen) => ({
+  background: colors.surface,
+  borderRight: `1px solid ${colors.border}`,
   padding: '24px 0',
   overflowY: 'auto',
   backdropFilter: 'blur(20px)'
 })
 
-const sidebarOverlayStyle = (isMobileMenuOpen) => ({
+const getSidebarOverlayStyle = (colors, isMobileMenuOpen) => ({
   position: 'fixed',
   top: 0,
   left: 0,
   right: 0,
   bottom: 0,
-  background: 'rgba(0, 0, 0, 0.5)',
+  background: colors.overlay,
   zIndex: 999,
   display: isMobileMenuOpen ? 'block' : 'none'
 })
 
-const mobileMenuToggleStyle = {
+const getMobileMenuToggleStyle = (colors) => ({
   display: 'none',
   position: 'fixed',
   top: '80px',
   left: '16px',
   zIndex: 1001,
-  background: 'rgba(139, 92, 246, 0.9)',
+  background: colors.primary,
   border: 'none',
   borderRadius: '8px',
   padding: '12px',
   color: 'white',
   cursor: 'pointer',
-  boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+  boxShadow: `0 4px 12px ${colors.primary}40`,
   transition: 'all 0.2s ease',
   alignItems: 'center',
   justifyContent: 'center'
-}
+})
 
 const sidebarSection = {
   padding: '0 24px',
   marginBottom: '32px'
 }
 
-const sidebarTitle = {
+const getSidebarTitle = (colors) => ({
   fontSize: '14px',
   fontWeight: '600',
-  color: '#94a3b8',
+  color: colors.textSecondary,
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
   marginBottom: '16px',
   display: 'flex',
   alignItems: 'center',
   gap: '8px'
-}
+})
 
-const sidebarItem = {
+const getSidebarItem = (colors) => ({
   display: 'flex',
   alignItems: 'center',
   gap: '12px',
   padding: '12px 16px',
   borderRadius: '8px',
-  color: '#e2e8f0',
+  color: colors.text,
   cursor: 'pointer',
   transition: 'all 0.2s ease',
   marginBottom: '4px',
   position: 'relative'
-}
+})
 
-const sidebarItemActive = {
-  background: 'rgba(139, 92, 246, 0.15)',
-  color: '#a78bfa',
-  borderLeft: '3px solid #8b5cf6'
-}
+const getSidebarItemActive = (colors) => ({
+  background: colors.accent,
+  color: colors.primary,
+  borderLeft: `3px solid ${colors.primary}`
+})
 
-const sidebarItemHover = {
-  background: 'rgba(148, 163, 184, 0.1)',
-  color: '#f1f5f9'
-}
+const getSidebarItemHover = (colors) => ({
+  background: colors.hover,
+  color: colors.text
+})
 
-const badgeStyle = {
-  background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+const getBadgeStyle = (colors) => ({
+  background: `linear-gradient(135deg, ${colors.warning} 0%, ${colors.error} 100%)`,
   color: 'white',
   fontSize: '10px',
   fontWeight: '700',
@@ -120,10 +121,10 @@ const badgeStyle = {
   borderRadius: '10px',
   textTransform: 'uppercase',
   letterSpacing: '0.05em'
-}
+})
 
-const proBadgeStyle = {
-  background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)',
+const getProBadgeStyle = (colors) => ({
+  background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
   color: 'white',
   fontSize: '10px',
   fontWeight: '700',
@@ -131,10 +132,10 @@ const proBadgeStyle = {
   borderRadius: '10px',
   textTransform: 'uppercase',
   letterSpacing: '0.05em'
-}
+})
 
-const newBadgeStyle = {
-  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+const getNewBadgeStyle = (colors) => ({
+  background: `linear-gradient(135deg, ${colors.success} 0%, ${colors.success}dd 100%)`,
   color: 'white',
   fontSize: '10px',
   fontWeight: '700',
@@ -142,41 +143,41 @@ const newBadgeStyle = {
   borderRadius: '10px',
   textTransform: 'uppercase',
   letterSpacing: '0.05em'
-}
+})
 
-const contentAreaStyle = {
+const getContentAreaStyle = (colors) => ({
   padding: '32px',
   overflowY: 'auto',
-  background: 'rgba(15, 23, 42, 0.3)'
-}
+  background: colors.surfaceSecondary
+})
 
-const welcomeSectionStyle = {
-  background: 'rgba(30, 41, 59, 0.8)',
+const getWelcomeSectionStyle = (colors) => ({
+  background: colors.card,
   borderRadius: '20px',
   padding: '32px',
   marginBottom: '32px',
-  border: '1px solid rgba(148, 163, 184, 0.2)',
+  border: `1px solid ${colors.border}`,
   backdropFilter: 'blur(20px)',
   position: 'relative',
   overflow: 'hidden'
-}
+})
 
-const welcomeTitle = {
+const getWelcomeTitle = (colors) => ({
   fontSize: '32px',
   fontWeight: '800',
-  color: '#f1f5f9',
+  color: colors.text,
   margin: '0 0 8px 0',
   display: 'flex',
   alignItems: 'center',
   gap: '12px'
-}
+})
 
-const welcomeSubtitle = {
+const getWelcomeSubtitle = (colors) => ({
   fontSize: '18px',
-  color: '#94a3b8',
+  color: colors.textSecondary,
   margin: '0 0 32px 0',
   fontWeight: '500'
-}
+})
 
 const statsGridStyle = {
   display: 'grid',
@@ -185,14 +186,14 @@ const statsGridStyle = {
   marginBottom: '32px'
 }
 
-const statCardStyle = {
-  background: 'rgba(15, 23, 42, 0.6)',
+const getStatCardStyle = (colors) => ({
+  background: colors.card,
   borderRadius: '16px',
   padding: '24px',
-  border: '1px solid rgba(148, 163, 184, 0.1)',
+  border: `1px solid ${colors.border}`,
   textAlign: 'center',
   transition: 'all 0.3s ease'
-}
+})
 
 const statCardHover = {
   transform: 'translateY(-4px)',
@@ -210,29 +211,29 @@ const statIconStyle = {
   fontSize: '24px'
 }
 
-const statValueStyle = {
+const getStatValueStyle = (colors) => ({
   fontSize: '28px',
   fontWeight: '800',
-  color: '#f1f5f9',
+  color: colors.text,
   margin: '0 0 4px 0'
-}
+})
 
-const statLabelStyle = {
+const getStatLabelStyle = (colors) => ({
   fontSize: '14px',
-  color: '#94a3b8',
+  color: colors.textSecondary,
   fontWeight: '500',
   margin: 0
-}
+})
 
-const sectionTitleStyle = {
+const getSectionTitleStyle = (colors) => ({
   fontSize: '24px',
   fontWeight: '700',
-  color: '#f1f5f9',
+  color: colors.text,
   margin: '0 0 24px 0',
   display: 'flex',
   alignItems: 'center',
   gap: '12px'
-}
+})
 
 const performanceGridStyle = {
   display: 'grid',
@@ -274,17 +275,17 @@ const quickLaunchGridStyle = {
   gap: '20px'
 }
 
-const quickLaunchItemStyle = {
-  background: 'rgba(30, 41, 59, 0.8)',
+const getQuickLaunchItemStyle = (colors) => ({
+  background: colors.card,
   borderRadius: '16px',
   padding: '24px',
-  border: '1px solid rgba(148, 163, 184, 0.1)',
+  border: `1px solid ${colors.border}`,
   textAlign: 'center',
   cursor: 'pointer',
   transition: 'all 0.3s ease',
   position: 'relative',
   overflow: 'hidden'
-}
+})
 
 const quickLaunchItemHover = {
   transform: 'translateY(-4px)',
@@ -302,12 +303,12 @@ const quickLaunchIconStyle = {
   fontSize: '24px'
 }
 
-const quickLaunchLabelStyle = {
+const getQuickLaunchLabelStyle = (colors) => ({
   fontSize: '14px',
   fontWeight: '600',
-  color: '#e2e8f0',
+  color: colors.text,
   margin: 0
-}
+})
 
 const tabContainer = {
   display: 'flex',
@@ -386,13 +387,13 @@ const floatingOrb3Style = {
   animationDelay: '4s'
 }
 
-const largeLogoStyle = {
+const getLargeLogoStyle = (colors) => ({
   position: 'absolute',
   top: '20px',
   right: '20px',
   width: '120px',
   height: '120px',
-  background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+  background: `linear-gradient(135deg, ${colors.warning} 0%, ${colors.error} 100%)`,
   borderRadius: '50%',
   display: 'grid',
   placeItems: 'center',
@@ -400,7 +401,7 @@ const largeLogoStyle = {
   fontWeight: '800',
   color: 'white',
   opacity: '0.1'
-}
+})
 
 const animations = `
   @keyframes slideInLeft {
@@ -451,6 +452,7 @@ export default function UserDashboard() {
   const [leftTab, setLeftTab] = useState(null)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const navigate = useNavigate()
+  const { colors } = useTheme()
 
   const loadProgress = async () => {
     setLoadingProgress(true)
@@ -567,8 +569,8 @@ export default function UserDashboard() {
       alignItems: 'center', 
       height: '100vh',
       fontSize: '18px',
-      color: '#64748b',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      color: colors.textSecondary,
+      background: colors.background
     }}>Loading...</div>
   }
 
@@ -580,12 +582,12 @@ export default function UserDashboard() {
   return (
     <>
       <style>{animations}</style>
-    <div style={pageStyle}>
+    <div style={getPageStyle(colors)}>
         {/* Floating Background Elements */}
         <div style={floatingOrbStyle}></div>
         <div style={floatingOrb2Style}></div>
         <div style={floatingOrb3Style}></div>
-        <div style={largeLogoStyle}>
+        <div style={getLargeLogoStyle(colors)}>
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
@@ -604,7 +606,7 @@ export default function UserDashboard() {
       {/* Mobile Menu Toggle */}
       <button 
         onClick={() => setShowMobileMenu(!showMobileMenu)} 
-        style={mobileMenuToggleStyle}
+        style={getMobileMenuToggleStyle(colors)}
         className="mobile-menu-toggle"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
@@ -618,7 +620,7 @@ export default function UserDashboard() {
 
       {/* Mobile Menu Overlay */}
       <div 
-        style={sidebarOverlayStyle(showMobileMenu)} 
+        style={getSidebarOverlayStyle(colors, showMobileMenu)} 
         onClick={() => setShowMobileMenu(false)}
         className={`mobile-overlay ${showMobileMenu ? 'open' : ''}`}
       ></div>
@@ -628,7 +630,7 @@ export default function UserDashboard() {
               {/* Main Layout Container */}
         <div style={mainContentStyle} className="dashboard-main-content">
         {/* Left Sidebar */}
-        <div style={sidebarStyle(showMobileMenu)} className={`mobile-sidebar ${showMobileMenu ? 'open' : ''}`}>
+        <div style={getSidebarStyle(colors, showMobileMenu)} className={`mobile-sidebar ${showMobileMenu ? 'open' : ''}`}>
           {/* Mobile Close Button */}
           <div style={{
             display: 'none',
@@ -639,9 +641,9 @@ export default function UserDashboard() {
             <button
               onClick={() => setShowMobileMenu(false)}
               style={{
-                background: 'rgba(148, 163, 184, 0.1)',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
-                color: '#e2e8f0',
+                background: colors.hover,
+                border: `1px solid ${colors.borderSecondary}`,
+                color: colors.text,
                 padding: '8px',
                 borderRadius: '8px',
                 cursor: 'pointer',
@@ -659,94 +661,94 @@ export default function UserDashboard() {
             </button>
           </div>
           <div style={sidebarSection} className="dashboard-sidebar-section">
-            <div style={sidebarTitle}>
+            <div style={getSidebarTitle(colors)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
               </svg>
               <span>Quantitative Tutor</span>
             </div>
-            <div style={{...sidebarItem, color: '#94a3b8', fontSize: '12px'}} className="dashboard-sidebar-item">
+            <div style={{...getSidebarItem(colors), color: colors.textSecondary, fontSize: '12px'}} className="dashboard-sidebar-item">
               Welcome back, {userLabel}!
             </div>
           </div>
 
           <div style={sidebarSection} className="dashboard-sidebar-section">
-            <div style={sidebarTitle}>
+            <div style={getSidebarTitle(colors)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
               <span>Learning Tools</span>
             </div>
-            <div style={sidebarItem} onClick={() => { setLeftTab('learn'); setShowMobileMenu(false); }} className="dashboard-sidebar-item">
+            <div style={getSidebarItem(colors)} onClick={() => { setLeftTab('learn'); setShowMobileMenu(false); }} className="dashboard-sidebar-item">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
               <span>Aptitude Bot</span>
             </div>
-            <div style={sidebarItem} onClick={() => { setLeftTab('generator'); setShowMobileMenu(false); }} className="dashboard-sidebar-item">
+            <div style={getSidebarItem(colors)} onClick={() => { setLeftTab('generator'); setShowMobileMenu(false); }} className="dashboard-sidebar-item">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
               <span>Roadmap Generator</span>
             </div>
-            <div style={sidebarItem} onClick={() => { setLeftTab('learningBot'); setShowMobileMenu(false); }} className="dashboard-sidebar-item">
+            <div style={getSidebarItem(colors)} onClick={() => { setLeftTab('learningBot'); setShowMobileMenu(false); }} className="dashboard-sidebar-item">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
               </svg>
               <span>ChatBot</span>
-              <div style={newBadgeStyle}>NEW</div>
+              <div style={getNewBadgeStyle(colors)}>NEW</div>
             </div>
           </div>
 
           <div style={sidebarSection} className="dashboard-sidebar-section">
-            <div style={sidebarTitle}>
+            <div style={getSidebarTitle(colors)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
               <span>Your Progress</span>
             </div>
-            <div style={statCardStyle}>
-              <div style={{...statIconStyle, background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'}}>
+            <div style={getStatCardStyle(colors)}>
+              <div style={{...statIconStyle, background: `linear-gradient(135deg, ${colors.error} 0%, ${colors.error}dd 100%)`}}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               </div>
-              <div style={statValueStyle}>{streakDays}</div>
-              <div style={statLabelStyle}>Streak</div>
+              <div style={getStatValueStyle(colors)}>{streakDays}</div>
+              <div style={getStatLabelStyle(colors)}>Streak</div>
             </div>
-            <div style={statCardStyle}>
-              <div style={{...statIconStyle, background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'}}>
+            <div style={getStatCardStyle(colors)}>
+              <div style={{...statIconStyle, background: `linear-gradient(135deg, ${colors.success} 0%, ${colors.success}dd 100%)`}}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                   <path d="M9 12l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               </div>
-              <div style={statValueStyle}>{getCompletionRate()}%</div>
-              <div style={statLabelStyle}>Completion</div>
+              <div style={getStatValueStyle(colors)}>{getCompletionRate()}%</div>
+              <div style={getStatLabelStyle(colors)}>Completion</div>
             </div>
           </div>
         </div>
 
         {/* Main Content Area */}
-        <div style={contentAreaStyle} className="dashboard-content-area">
+        <div style={getContentAreaStyle(colors)} className="dashboard-content-area">
           {/* Welcome Section - Show when no leftTab is selected */}
           {!leftTab && (
             <>
-              <div style={welcomeSectionStyle}>
-                <div style={largeLogoStyle}>QT</div>
-                <h1 style={welcomeTitle}>
+              <div style={getWelcomeSectionStyle(colors)}>
+                <div style={getLargeLogoStyle(colors)}>QT</div>
+                                  <h1 style={getWelcomeTitle(colors)}>
                   Welcome back, {userLabel}!
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
                 </h1>
-                <p style={welcomeSubtitle}>
+                                  <p style={getWelcomeSubtitle(colors)}>
                   Ready to master quantitative concepts? Your learning journey continues here!
                 </p>
                 
                 <div style={statsGridStyle} className="dashboard-stats-grid">
-                  <div style={statCardStyle}>
-                    <div style={{...statIconStyle, background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'}}>
+                  <div style={getStatCardStyle(colors)}>
+                    <div style={{...statIconStyle, background: `linear-gradient(135deg, ${colors.error} 0%, ${colors.error}dd 100%)`}}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                         <path d="M9 12l2 2 4-4"/>
                         <path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/>
@@ -754,42 +756,42 @@ export default function UserDashboard() {
                         <path d="M12 3c0 1-1 2-2 2s-2 1-2 2 1 1 2 2 2 1 2 2 1-1 2-2 2-1 2-2-1-1-2-2-2-1-2-2z"/>
                       </svg>
                     </div>
-                    <div style={statValueStyle}>{progressSummary?.total_quizzes || 0}</div>
-                    <div style={statLabelStyle}>Quizzes</div>
+                    <div style={getStatValueStyle(colors)}>{progressSummary?.total_quizzes || 0}</div>
+                    <div style={getStatLabelStyle(colors)}>Quizzes</div>
                   </div>
-                  <div style={statCardStyle}>
-                    <div style={{...statIconStyle, background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'}}>
+                  <div style={getStatCardStyle(colors)}>
+                    <div style={{...statIconStyle, background: `linear-gradient(135deg, ${colors.warning} 0%, ${colors.warning}dd 100%)`}}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     </div>
-                    <div style={statValueStyle}>{getCompletionRate()}%</div>
-                    <div style={statLabelStyle}>Score</div>
+                    <div style={getStatValueStyle(colors)}>{getCompletionRate()}%</div>
+                    <div style={getStatLabelStyle(colors)}>Score</div>
                   </div>
-                  <div style={statCardStyle}>
-                    <div style={{...statIconStyle, background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'}}>
+                  <div style={getStatCardStyle(colors)}>
+                    <div style={{...statIconStyle, background: `linear-gradient(135deg, ${colors.error} 0%, ${colors.error}dd 100%)`}}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     </div>
-                    <div style={statValueStyle}>{streakDays}</div>
-                    <div style={statLabelStyle}>Streak</div>
+                    <div style={getStatValueStyle(colors)}>{streakDays}</div>
+                    <div style={getStatLabelStyle(colors)}>Streak</div>
                   </div>
-                  <div style={statCardStyle}>
-                    <div style={{...statIconStyle, background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'}}>
+                  <div style={getStatCardStyle(colors)}>
+                    <div style={{...statIconStyle, background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primary}dd 100%)`}}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     </div>
-                    <div style={statValueStyle}>{progressSummary?.total_completed || 0}</div>
-                    <div style={statLabelStyle}>Completed</div>
+                    <div style={getStatValueStyle(colors)}>{progressSummary?.total_completed || 0}</div>
+                    <div style={getStatLabelStyle(colors)}>Completed</div>
                   </div>
                 </div>
               </div>
 
               {/* Quick Launch Section */}
-              <div style={{...welcomeSectionStyle, marginBottom: '32px'}}>
-                <h2 style={sectionTitleStyle}>
+              <div style={{...getWelcomeSectionStyle(colors), marginBottom: '32px'}}>
+                <h2 style={getSectionTitleStyle(colors)}>
                   Quick Launch
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
@@ -797,30 +799,30 @@ export default function UserDashboard() {
                 </h2>
                 
                 <div style={quickLaunchGridStyle} className="dashboard-quick-launch-grid">
-                  <div style={quickLaunchItemStyle} onClick={() => { setLeftTab('learn'); setShowMobileMenu(false); }}>
-                    <div style={{...quickLaunchIconStyle, background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'}}>
+                  <div style={getQuickLaunchItemStyle(colors)} onClick={() => { setLeftTab('learn'); setShowMobileMenu(false); }}>
+                    <div style={{...quickLaunchIconStyle, background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primary}dd 100%)`}}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     </div>
-                    <div style={quickLaunchLabelStyle}>Learn</div>
+                    <div style={getQuickLaunchLabelStyle(colors)}>Learn</div>
                   </div>
-                                      <div style={quickLaunchItemStyle} onClick={() => { setLeftTab('generator'); setShowMobileMenu(false); }}>
-                      <div style={{...quickLaunchIconStyle, background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'}}>
+                                      <div style={getQuickLaunchItemStyle(colors)} onClick={() => { setLeftTab('generator'); setShowMobileMenu(false); }}>
+                      <div style={{...quickLaunchIconStyle, background: `linear-gradient(135deg, ${colors.success} 0%, ${colors.success}dd 100%)`}}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                       </div>
-                      <div style={quickLaunchLabelStyle}>Roadmap Generator</div>
+                      <div style={getQuickLaunchLabelStyle(colors)}>Roadmap Generator</div>
                     </div>
-                                      <div style={quickLaunchItemStyle} onClick={() => { setLeftTab('learningBot'); setShowMobileMenu(false); }}>
-                      <div style={{...quickLaunchIconStyle, background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'}}>
+                                      <div style={getQuickLaunchItemStyle(colors)} onClick={() => { setLeftTab('learningBot'); setShowMobileMenu(false); }}>
+                      <div style={{...quickLaunchIconStyle, background: `linear-gradient(135deg, ${colors.warning} 0%, ${colors.warning}dd 100%)`}}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                           <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                         </svg>
                       </div>
-                      <div style={quickLaunchLabelStyle}>ChatBot</div>
-                      <div style={newBadgeStyle}>NEW</div>
+                      <div style={getQuickLaunchLabelStyle(colors)}>ChatBot</div>
+                      <div style={getNewBadgeStyle(colors)}>NEW</div>
                     </div>
                 </div>
               </div>
@@ -831,7 +833,7 @@ export default function UserDashboard() {
           {leftTab === 'learn' ? (
             selectedTopic ? (
               <div>
-                <div style={sectionTitleStyle}>
+                <div style={getSectionTitleStyle(colors)}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                   <span>Learn: {selectedTopic}</span>
                 </div>
@@ -906,7 +908,7 @@ export default function UserDashboard() {
                     onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                   >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 J14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
                     Achievements
                   </button>

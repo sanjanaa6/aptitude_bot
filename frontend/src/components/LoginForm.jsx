@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { login, register } from '../api.js'
+import { useTheme } from '../contexts/ThemeContext.jsx'
 
 export default function LoginForm({ onSuccess, initialMode }) {
   const [email, setEmail] = useState('')
@@ -10,6 +11,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const { colors } = useTheme()
 
   const submit = async (e) => {
     e.preventDefault()
@@ -44,7 +46,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
       {/* Mode Toggle */}
       <div style={{
         display: 'flex',
-        background: '#f1f5f9',
+        background: colors.hover,
         borderRadius: '8px',
         padding: '4px',
         marginBottom: '24px'
@@ -57,11 +59,11 @@ export default function LoginForm({ onSuccess, initialMode }) {
             padding: '8px 16px',
             borderRadius: '6px',
             border: 'none',
-            background: mode === 'login' ? 'white' : 'transparent',
-            color: mode === 'login' ? '#1e293b' : '#64748b',
+            background: mode === 'login' ? colors.surface : 'transparent',
+            color: mode === 'login' ? colors.text : colors.textSecondary,
             fontWeight: mode === 'login' ? '500' : '400',
             cursor: 'pointer',
-            boxShadow: mode === 'login' ? '0 1px 3px rgba(0, 0, 0, 0.1)' : 'none',
+            boxShadow: mode === 'login' ? `0 1px 3px ${colors.shadow}` : 'none',
             transition: 'all 0.2s ease'
           }}
         >
@@ -75,11 +77,11 @@ export default function LoginForm({ onSuccess, initialMode }) {
             padding: '8px 16px',
             borderRadius: '6px',
             border: 'none',
-            background: mode === 'register' ? 'white' : 'transparent',
-            color: mode === 'register' ? '#1e293b' : '#64748b',
+            background: mode === 'register' ? colors.surface : 'transparent',
+            color: mode === 'register' ? colors.text : colors.textSecondary,
             fontWeight: mode === 'register' ? '500' : '400',
             cursor: 'pointer',
-            boxShadow: mode === 'register' ? '0 1px 3px rgba(0, 0, 0, 0.1)' : 'none',
+            boxShadow: mode === 'register' ? `0 1px 3px ${colors.shadow}` : 'none',
             transition: 'all 0.2s ease'
           }}
         >
@@ -90,12 +92,12 @@ export default function LoginForm({ onSuccess, initialMode }) {
       {/* Error Message */}
       {error && (
         <div style={{
-          background: '#fed7d7',
-          border: '1px solid #feb2b2',
+          background: `${colors.error}20`,
+          border: `1px solid ${colors.error}40`,
           borderRadius: '6px',
           padding: '12px',
           marginBottom: '20px',
-          color: '#c53030',
+          color: colors.error,
           fontSize: '14px',
           display: 'flex',
           alignItems: 'center'
@@ -118,7 +120,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
                 marginBottom: '6px',
                 fontSize: '14px',
                 fontWeight: '500',
-                color: '#2d3748'
+                color: colors.text
               }}>
                 Username
               </label>
@@ -130,15 +132,17 @@ export default function LoginForm({ onSuccess, initialMode }) {
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  border: '1px solid #e2e8f0',
+                  border: `1px solid ${colors.border}`,
                   borderRadius: '6px',
                   fontSize: '16px',
                   transition: 'border-color 0.2s ease',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  background: colors.surface,
+                  color: colors.text
                 }}
                                  placeholder="Enter username"
-                 onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                 onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                 onFocus={(e) => e.target.style.borderColor = colors.primary}
+                 onBlur={(e) => e.target.style.borderColor = colors.border}
               />
             </div>
 
@@ -148,7 +152,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
                 marginBottom: '6px',
                 fontSize: '14px',
                 fontWeight: '500',
-                color: '#2d3748'
+                color: colors.text
               }}>
                 Full Name (Optional)
               </label>
@@ -159,15 +163,17 @@ export default function LoginForm({ onSuccess, initialMode }) {
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  border: '1px solid #e2e8f0',
+                  border: `1px solid ${colors.border}`,
                   borderRadius: '6px',
                   fontSize: '16px',
                   transition: 'border-color 0.2s ease',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  background: colors.surface,
+                  color: colors.text
                 }}
                                  placeholder="Enter full name"
-                 onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                 onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                 onFocus={(e) => e.target.style.borderColor = colors.primary}
+                 onBlur={(e) => e.target.style.borderColor = colors.border}
               />
             </div>
           </>
@@ -179,7 +185,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
             marginBottom: '6px',
             fontSize: '14px',
             fontWeight: '500',
-            color: '#2d3748'
+            color: colors.text
           }}>
             Email
           </label>
@@ -191,15 +197,17 @@ export default function LoginForm({ onSuccess, initialMode }) {
             style={{
               width: '100%',
               padding: '12px 16px',
-              border: '1px solid #e2e8f0',
+              border: `1px solid ${colors.border}`,
               borderRadius: '6px',
               fontSize: '16px',
               transition: 'border-color 0.2s ease',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              background: colors.surface,
+              color: colors.text
             }}
                          placeholder="Enter your email"
-             onFocus={(e) => e.target.style.borderColor = '#3498db'}
-             onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+             onFocus={(e) => e.target.style.borderColor = colors.primary}
+             onBlur={(e) => e.target.style.borderColor = colors.border}
           />
         </div>
 
@@ -209,7 +217,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
             marginBottom: '6px',
             fontSize: '14px',
             fontWeight: '500',
-            color: '#2d3748'
+            color: colors.text
           }}>
             Password
           </label>
@@ -223,31 +231,33 @@ export default function LoginForm({ onSuccess, initialMode }) {
                 width: '100%',
                 padding: '12px 16px',
                 paddingRight: '48px',
-                border: '1px solid #e2e8f0',
+                border: `1px solid ${colors.border}`,
                 borderRadius: '6px',
                 fontSize: '16px',
                 transition: 'border-color 0.2s ease',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                background: colors.surface,
+                color: colors.text
               }}
                              placeholder="Enter your password"
-               onFocus={(e) => e.target.style.borderColor = '#3498db'}
-               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+               onFocus={(e) => e.target.style.borderColor = colors.primary}
+               onBlur={(e) => e.target.style.borderColor = colors.border}
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: 'absolute',
-                right: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#718096',
-                padding: '4px'
-              }}
-            >
+                          <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: colors.textSecondary,
+                  padding: '4px'
+                }}
+              >
               {showPassword ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
@@ -269,7 +279,7 @@ export default function LoginForm({ onSuccess, initialMode }) {
           style={{
             width: '100%',
             padding: '12px 16px',
-                         background: loading ? '#cbd5e0' : 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)',
+                         background: loading ? colors.textSecondary : `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
             color: 'white',
             border: 'none',
             borderRadius: '6px',
